@@ -297,28 +297,25 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
         <Section icon={Camera} title="Photos & Media">
           <div className="space-y-4">
             {/* Filter for successfully uploaded photos */}
-            {formData.photosMedia.uploads.filter(p => p.status === 'success').length > 0 ? (
+            {/* Display photos based on the order in the uploads array (user-defined ranking) */}
+            {formData.photosMedia.uploads.length > 0 ? (
                <div className="grid grid-cols-3 sm:grid-cols-4 gap-4">
-                 {formData.photosMedia.uploads
-                   .filter(p => p.status === 'success') // Ensure only successful uploads are shown
-                   .map((photoInfo) => (
+                 {formData.photosMedia.uploads.map((photoInfo, index) => (
                    <div key={photoInfo.id} className="relative aspect-square">
                      <img
-                       src={photoInfo.s3Url} // Use the S3 URL
-                       alt={`Property photo ${photoInfo.file.name}`} // Use original name for alt text
+                       src={photoInfo.s3Url} // Use the final S3 URL
+                       alt={`Property photo ${index + 1}`} // Alt text indicates order
                        className="w-full h-full object-cover rounded-lg"
                      />
-                     {/* Check featuredPhotoId against the photo's unique id */}
-                     {photoInfo.id === formData.photosMedia.featuredPhotoId && (
-                       <div className="absolute top-2 left-2 px-2 py-1 bg-blue-500 rounded-full text-white text-xs font-medium">
-                         Featured
-                       </div>
-                     )}
+                     {/* Display order badge */}
+                     <div className="absolute top-1 left-1 px-2 py-0.5 bg-blue-500/80 rounded-full text-white text-xs font-medium backdrop-blur-sm">
+                       {index + 1}
+                     </div>
                    </div>
                  ))}
                </div>
             ) : (
-               <p className="text-white/60 italic">No photos successfully uploaded.</p> // Updated message
+               <p className="text-white/60 italic">No photos uploaded.</p> // Updated message
             )}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
               {formData.photosMedia.virtualTourUrl && <InfoPair label="Virtual Tour URL" value={formData.photosMedia.virtualTourUrl} />}

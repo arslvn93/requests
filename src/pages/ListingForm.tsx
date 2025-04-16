@@ -19,14 +19,10 @@ import SuccessStep from '../components/ListingForm/SuccessStep';
 
 // Define the structure for individual photo upload state
 // Exporting these allows PhotosMediaStep and ReviewStep to import them if needed
-export interface PhotoUploadInfo { // Export if needed by other components directly
-  id: string;
-  file: File;
-  status: 'pending' | 'uploading' | 'success' | 'error';
-  s3Key?: string;
-  s3Url?: string;
-  error?: string;
-  previewUrl: string;
+export interface PhotoUploadInfo { // Simplified: Order in array determines rank
+  id: string; // Unique ID for the photo instance
+  s3Key: string; // Key in S3 bucket
+  s3Url: string; // URL after successful upload
 }
 
 export interface FormData { // Export if needed by other components directly
@@ -96,8 +92,7 @@ export interface FormData { // Export if needed by other components directly
     comparison: string;
   };
   photosMedia: {
-    uploads: PhotoUploadInfo[];
-    featuredPhotoId: string | null;
+    uploads: PhotoUploadInfo[]; // Array order represents user ranking (0 = 1st best)
     virtualTourUrl?: string;
     videoUrl?: string;
   };
@@ -126,7 +121,7 @@ const initialFormData: FormData = {
     developmentPlans: '', investmentHighlights: [],
   },
   neighborhoodInfo: { amenities: [], otherAmenity: '', comparison: '' },
-  photosMedia: { uploads: [], featuredPhotoId: null, virtualTourUrl: '', videoUrl: '' },
+  photosMedia: { uploads: [], virtualTourUrl: '', videoUrl: '' }, // Removed featuredPhotoId
 };
 
 
@@ -143,9 +138,8 @@ const ListingForm: React.FC = () => {
   // Removed uploadPhotosToS3 function
 
   const mapFormDataToPayload = (data: FormData): Record<string, any> => {
-    // Get successful photo URLs from the state
-    const successfulUploads = data.photosMedia.uploads.filter(p => p.status === 'success');
-    const photoUrls = successfulUploads.map(p => p.s3Url).filter((url): url is string => !!url);
+    // The uploads array now only contains successfully uploaded photos, ordered by user preference.
+    const photoUrls = data.photosMedia.uploads.map(p => p.s3Url);
 
      const payload: Record<string, any> = {
       listing_id: data.listingId, // Add listingId
@@ -206,11 +200,12 @@ const ListingForm: React.FC = () => {
       investment_highlights: data.investmentPotential.isGoodInvestment === 'yes' ? data.investmentPotential.investmentHighlights : [],
       // Photos/Media
       branded_photo_tour_url: data.photosMedia.virtualTourUrl || null,
-      featured_photo_id: data.photosMedia.featuredPhotoId, // Include featured photo ID
+      // featured_photo_id is removed
     };
 
-    // Add the actual S3 photo URLs from successful uploads
+    // Add the S3 photo URLs based on the user-defined order in the uploads array
     photoUrls.forEach((url, index) => {
+      // Map array index (0-based) to payload key (1-based)
       payload[`photo_url_${index + 1}`] = url;
     });
 
@@ -220,20 +215,8 @@ const ListingForm: React.FC = () => {
   const handleSubmit = async () => {
     if (isSubmitting) return;
 
-    // Check if any photos are still uploading
-    const uploadsInProgress = formData.photosMedia.uploads.some(p => p.status === 'uploading');
-    if (uploadsInProgress) {
-      setSubmissionStatus('error');
-      setSubmissionMessage('Please wait for all photos to finish uploading before submitting.');
-      return; // Prevent submission
-    }
-
-    // Optional: Check for failed uploads and warn or prevent submission
-    const failedUploads = formData.photosMedia.uploads.filter(p => p.status === 'error');
-    if (failedUploads.length > 0) {
-       console.warn(`Warning: ${failedUploads.length} photo(s) have upload errors. Proceeding with submission...`);
-       // Optionally prevent submission here if desired
-    }
+    // Removed checks for uploading/failed photos as the new component handles this differently.
+    // The photosMedia.uploads array will only contain successfully uploaded photos.
 
     setIsSubmitting(true);
     setSubmissionStatus('idle');
@@ -258,11 +241,8 @@ const ListingForm: React.FC = () => {
 
       if (response.ok) {
         setSubmissionStatus('success');
-        // Adjust success message based on whether there were *initial* upload errors
-        const finalSuccessMsg = failedUploads.length > 0
-          ? `Listing submitted successfully! (Note: ${failedUploads.length} photo(s) had upload errors.)`
-          : 'Listing submitted successfully!';
-        setSubmissionMessage(finalSuccessMsg);
+        // Simplified success message
+        setSubmissionMessage('Listing submitted successfully!');
         console.log('Submission successful!');
       } else {
         const errorData = await response.text();
