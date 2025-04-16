@@ -16,6 +16,7 @@ import NeighborhoodInfoStep from '../components/ListingForm/NeighborhoodInfoStep
 import PhotosMediaStep from '../components/ListingForm/PhotosMediaStep'; // Assuming PhotosMediaStep handles its own imports now
 import ReviewStep from '../components/ListingForm/ReviewStep';
 import SuccessStep from '../components/ListingForm/SuccessStep';
+import IntroStep from '../components/ListingForm/IntroStep'; // Import the new IntroStep
 
 // Define the structure for individual photo upload state
 // Exporting these allows PhotosMediaStep and ReviewStep to import them if needed
@@ -127,7 +128,7 @@ const initialFormData: FormData = {
 
 const ListingForm: React.FC = () => {
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState<number>(1);
+  const [currentStep, setCurrentStep] = useState<number>(0); // Start at step 0 (Intro)
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState<'idle' | 'success' | 'error'>('idle');
@@ -227,7 +228,7 @@ const ListingForm: React.FC = () => {
       const payload = mapFormDataToPayload(formData);
       const endpoint = 'https://n8n.salesgenius.co/webhook/listingad';
 
-      console.log('Submitting payload:', JSON.stringify(payload, null, 2));
+      // console.log('Submitting payload:', JSON.stringify(payload, null, 2)); // Removed log
 
       // Submit to Webhook
       setSubmissionMessage('Submitting listing data...');
@@ -243,7 +244,7 @@ const ListingForm: React.FC = () => {
         setSubmissionStatus('success');
         // Simplified success message
         setSubmissionMessage('Listing submitted successfully!');
-        console.log('Submission successful!');
+        // console.log('Submission successful!'); // Removed log
       } else {
         const errorData = await response.text();
         console.error('Webhook submission failed:', response.status, errorData);
@@ -261,7 +262,7 @@ const ListingForm: React.FC = () => {
 
   const handleReset = () => {
     setFormData(initialFormData);
-    setCurrentStep(1);
+    setCurrentStep(0); // Reset to Intro step
     setSubmissionStatus('idle');
     setSubmissionMessage('');
     setIsSubmitting(false);
@@ -269,11 +270,15 @@ const ListingForm: React.FC = () => {
 
   const handleBack = () => {
     if (submissionStatus === 'success') return; // Prevent back after success
-    if (currentStep === 1) {
-      navigate('/');
+    if (currentStep === 0) {
+      navigate('/'); // Navigate away if on Intro step
       return;
     }
-    setCurrentStep((prev) => Math.max(1, prev - 1));
+    if (currentStep === 1) {
+      setCurrentStep(0); // Go back to Intro step from the first real step
+      return;
+    }
+    setCurrentStep((prev) => Math.max(0, prev - 1)); // Allow going back to step 0
   };
 
   const handleNext = () => {
@@ -304,14 +309,19 @@ const ListingForm: React.FC = () => {
       ) : (
         // Otherwise, show the form progress and current step
         <>
-          <FormProgress
-            currentStep={currentStep}
-            totalSteps={totalSteps}
-            onBack={handleBack}
-            showBack={currentStep > 1}
-          />
-          <div className="max-w-2xl mx-auto px-4 pt-24 pb-8">
+          {currentStep > 0 && ( // Only show progress bar after the intro step
+            <FormProgress
+              currentStep={currentStep} // Pass the actual current step (1-12)
+              totalSteps={totalSteps} // Total steps remain 12 (excluding intro)
+              onBack={handleBack}
+              showBack={currentStep > 1} // Show back button only after step 1
+            />
+          )}
+          <div className={`max-w-2xl mx-auto px-4 pb-8 ${currentStep > 0 ? 'pt-24' : 'pt-0'}`}> {/* Adjust top padding */}
             {/* Render the current step based on currentStep */}
+            {currentStep === 0 && ( // Render Intro Step
+              <IntroStep onNext={handleNext} />
+            )}
             {currentStep === 1 && (
               <ContactStep
                 value={formData.contact}

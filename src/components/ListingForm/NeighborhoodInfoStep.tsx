@@ -47,8 +47,8 @@ const NeighborhoodInfoStep: React.FC<NeighborhoodInfoStepProps> = ({ value, onCh
           setShowOtherInput(true);
         }
       } else {
-        // Optional: Provide feedback that limit is reached
-        console.log("Maximum 3 amenities selected");
+        // Optional: Provide feedback that limit is reached (console log removed)
+        // console.log("Maximum 3 amenities selected");
         return;
       }
     }
@@ -123,12 +123,15 @@ const NeighborhoodInfoStep: React.FC<NeighborhoodInfoStepProps> = ({ value, onCh
               <MapPin className="w-6 h-6 text-blue-400" />
               <input
                 type="text"
+                id="otherAmenity"
+                name="otherAmenity"
                 value={value.otherAmenity}
                 onChange={handleOtherAmenityChange}
                 onFocus={() => setFocusedField('otherAmenity')}
                 onBlur={() => setFocusedField(null)}
                 placeholder="Specify other amenity"
                 className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
+                required={value.amenities.includes('other')} // Conditionally required
               />
             </div>
           )}
@@ -142,6 +145,8 @@ const NeighborhoodInfoStep: React.FC<NeighborhoodInfoStepProps> = ({ value, onCh
             ${focusedField === 'comparison' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <MapPin className="w-6 h-6 text-blue-400 mt-1" />
             <textarea
+              id="comparison"
+              name="comparison"
               value={value.comparison}
               onChange={handleComparisonChange}
               onFocus={() => setFocusedField('comparison')}

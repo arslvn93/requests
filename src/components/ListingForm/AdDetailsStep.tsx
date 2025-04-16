@@ -116,12 +116,16 @@ const AdDetailsStep: React.FC<AdDetailsStepProps> = ({ value, onChange, onNext }
             <DollarSign className="w-6 h-6 text-blue-400" />
             <input
               type="text"
+              id="dailyBudget"
+              name="dailyBudget"
+              inputMode="numeric" // Better for mobile keyboards
               value={displayBudget}
               onChange={handleBudgetChange}
               onFocus={() => setFocusedField('dailyBudget')}
               onBlur={() => setFocusedField(null)}
               placeholder="Enter daily budget"
               className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
+              required
             />
             <span className="text-white/60">/day</span>
           </div>
@@ -139,12 +143,15 @@ const AdDetailsStep: React.FC<AdDetailsStepProps> = ({ value, onChange, onNext }
                   <MapPin className="w-6 h-6 text-blue-400" />
                   <input
                     type="text"
+                    id={`location-${index}`}
+                    name={`location-${index}`}
                     value={location}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleLocationChange(index, e.target.value)}
                     onFocus={() => setFocusedField(`location-${index}`)}
                     onBlur={() => setFocusedField(null)}
                     placeholder="Enter city or area"
                     className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
+                    required
                   />
                 </div>
                 {/* Show remove button only if there's more than one location */}
@@ -211,12 +218,15 @@ const AdDetailsStep: React.FC<AdDetailsStepProps> = ({ value, onChange, onNext }
               <Calendar className="w-6 h-6 text-blue-400" />
               <input
                 type="date"
+                id="endDate"
+                name="endDate"
                 value={value.endDate}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateField('endDate', e.target.value)}
                 onFocus={() => setFocusedField('endDate')}
                 onBlur={() => setFocusedField(null)}
                 min={new Date().toISOString().split('T')[0]}
                 className="flex-1 bg-transparent border-none outline-none text-white/90"
+                required={value.duration === 'specific'} // Conditionally required
               />
             </div>
           )}

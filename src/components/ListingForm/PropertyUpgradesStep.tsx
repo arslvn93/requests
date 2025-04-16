@@ -52,6 +52,8 @@ const PropertyUpgradesStep: React.FC<PropertyUpgradesStepProps> = ({ value, onCh
             ${focusedField === 'upgradesDescription' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <Wrench className="w-6 h-6 text-blue-400 mt-1" />
             <textarea
+              id="upgradesDescription"
+              name="upgradesDescription"
               value={value.upgradesDescription}
               onChange={(e) => onChange({ ...value, upgradesDescription: e.target.value })}
               onFocus={() => setFocusedField('upgradesDescription')}

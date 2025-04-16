@@ -110,6 +110,9 @@ const InvestmentPotentialStep: React.FC<InvestmentPotentialStepProps> = ({ value
             <DollarSign className="w-6 h-6 text-blue-400" />
             <input
               type="text"
+              id="rentalIncome"
+              name="rentalIncome"
+              inputMode="numeric" // Better for mobile keyboards
               value={formatCurrency(value.rentalIncome)}
               onChange={handleRentalIncomeChange}
               onFocus={() => setFocusedField('rentalIncome')}
@@ -128,6 +131,8 @@ const InvestmentPotentialStep: React.FC<InvestmentPotentialStepProps> = ({ value
             ${focusedField === 'propertyAppreciation' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <Calculator className="w-6 h-6 text-blue-400 mt-1" />
             <textarea
+              id="propertyAppreciation"
+              name="propertyAppreciation"
               value={value.propertyAppreciation}
               onChange={(e) => onChange({ ...value, propertyAppreciation: e.target.value })}
               onFocus={() => setFocusedField('propertyAppreciation')}
@@ -146,6 +151,8 @@ const InvestmentPotentialStep: React.FC<InvestmentPotentialStepProps> = ({ value
             ${focusedField === 'developmentPlans' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <FileText className="w-6 h-6 text-blue-400 mt-1" />
             <textarea
+              id="developmentPlans"
+              name="developmentPlans"
               value={value.developmentPlans}
               onChange={(e) => onChange({ ...value, developmentPlans: e.target.value })}
               onFocus={() => setFocusedField('developmentPlans')}

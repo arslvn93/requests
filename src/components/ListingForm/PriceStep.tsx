@@ -62,12 +62,16 @@ const PriceStep: React.FC<PriceStepProps> = ({ value, onChange, onNext }) => {
             <DollarSign className="w-6 h-6 text-blue-400" />
             <input
               type="text" // Use text type to allow custom formatting display
+              id="price"
+              name="price"
+              inputMode="numeric" // Better for mobile keyboards
               value={formatPriceDisplay(value.price)}
               onChange={handlePriceChange}
               onFocus={() => setFocusedField('price')}
               onBlur={() => setFocusedField(null)}
               placeholder="Enter listing price"
               className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
+              required
             />
           </div>
         </div>

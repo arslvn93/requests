@@ -56,13 +56,15 @@ const ContactStep: React.FC<ContactStepProps> = ({ value, onChange, onNext }) =>
             <User className="w-6 h-6 text-blue-400" />
             <input
               type="text"
+              id="firstName"
+              name="firstName"
               value={value.firstName}
               onChange={(e) => updateField('firstName', e.target.value)}
               onFocus={() => setFocusedField('firstName')}
               onBlur={() => setFocusedField(null)}
               placeholder="First Name"
-              defaultValue="Taylor"
               className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
+              required // Added for better form validation/accessibility
             />
             </div>
             
@@ -71,13 +73,15 @@ const ContactStep: React.FC<ContactStepProps> = ({ value, onChange, onNext }) =>
             <User className="w-6 h-6 text-blue-400" />
             <input
               type="text"
+              id="lastName"
+              name="lastName"
               value={value.lastName}
               onChange={(e) => updateField('lastName', e.target.value)}
               onFocus={() => setFocusedField('lastName')}
               onBlur={() => setFocusedField(null)}
               placeholder="Last Name"
-              defaultValue="Morgado"
               className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
+              required // Added for better form validation/accessibility
             />
             </div>
           </div>
@@ -91,12 +95,16 @@ const ContactStep: React.FC<ContactStepProps> = ({ value, onChange, onNext }) =>
           <Phone className="w-6 h-6 text-blue-400" />
           <input
             type="tel"
+            id="phone"
+            name="phone"
             value={value.phone}
             onChange={(e) => updateField('phone', e.target.value.replace(/\D/g, ''))}
             onFocus={() => setFocusedField('phone')}
             onBlur={() => setFocusedField(null)}
             placeholder="Phone number"
             className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
+            required // Added for better form validation/accessibility
+            minLength={10} // Basic validation
           />
           </div>
         </div>
@@ -109,13 +117,15 @@ const ContactStep: React.FC<ContactStepProps> = ({ value, onChange, onNext }) =>
           <Mail className="w-6 h-6 text-blue-400" />
           <input
             type="email"
+            id="email"
+            name="email"
             value={value.email}
             onChange={(e) => updateField('email', e.target.value)}
             onFocus={() => setFocusedField('email')}
             onBlur={() => setFocusedField(null)}
-            defaultValue="taylor@advantayge.com"
             placeholder="Email address"
             className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
+            required // Added for better form validation/accessibility
           />
           </div>
         </div>

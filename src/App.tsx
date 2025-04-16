@@ -7,7 +7,7 @@ import ListingForm from './pages/ListingForm';
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Routes>
         <Route path="/listing-form" element={<ListingForm />} />
         <Route path="/" element={

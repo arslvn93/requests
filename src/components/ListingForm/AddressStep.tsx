@@ -57,12 +57,15 @@ const AddressStep: React.FC<AddressStepProps> = ({ value, onChange, onNext }) =>
           <MapPin className="w-6 h-6 text-blue-400" />
           <input
             type="text"
+            id="address"
+            name="address"
             value={value.address}
             onChange={(e) => updateField('address', e.target.value)}
             onFocus={() => setFocusedField('address')}
             onBlur={() => setFocusedField(null)}
             placeholder="Street Address"
             className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
+            required
           />
           </div>
         </div>
@@ -75,6 +78,8 @@ const AddressStep: React.FC<AddressStepProps> = ({ value, onChange, onNext }) =>
           <Building2 className="w-6 h-6 text-blue-400" />
           <input
             type="text"
+            id="address2"
+            name="address2"
             value={value.address2}
             onChange={(e) => updateField('address2', e.target.value)}
             onFocus={() => setFocusedField('address2')}
@@ -93,12 +98,15 @@ const AddressStep: React.FC<AddressStepProps> = ({ value, onChange, onNext }) =>
               ${focusedField === 'city' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <input
               type="text"
+              id="city"
+              name="city"
               value={value.city}
               onChange={(e) => updateField('city', e.target.value)}
               onFocus={() => setFocusedField('city')}
               onBlur={() => setFocusedField(null)}
               placeholder="City"
               className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
+              required
             />
             </div>
 
@@ -106,12 +114,15 @@ const AddressStep: React.FC<AddressStepProps> = ({ value, onChange, onNext }) =>
               ${focusedField === 'state' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <input
               type="text"
+              id="state"
+              name="state"
               value={value.state}
               onChange={(e) => updateField('state', e.target.value)}
               onFocus={() => setFocusedField('state')}
               onBlur={() => setFocusedField(null)}
               placeholder="State/Province"
               className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
+              required
             />
             </div>
           </div>
@@ -125,23 +136,29 @@ const AddressStep: React.FC<AddressStepProps> = ({ value, onChange, onNext }) =>
               ${focusedField === 'zipCode' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <input
               type="text"
+              id="zipCode"
+              name="zipCode"
               value={value.zipCode}
               onChange={(e) => updateField('zipCode', e.target.value)}
               onFocus={() => setFocusedField('zipCode')}
               onBlur={() => setFocusedField(null)}
               placeholder="ZIP/Postal Code"
               className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
+              required
             />
             </div>
 
             <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
               ${focusedField === 'country' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <select
+              id="country"
+              name="country"
               value={value.country}
               onChange={(e) => updateField('country', e.target.value)}
               onFocus={() => setFocusedField('country')}
               onBlur={() => setFocusedField(null)}
               className="flex-1 bg-transparent border-none outline-none text-white/90 cursor-pointer"
+              required
             >
               <option value="Canada" className="bg-gray-900">Canada</option>
               <option value="United States" className="bg-gray-900">United States</option>

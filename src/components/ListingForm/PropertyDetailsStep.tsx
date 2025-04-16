@@ -116,12 +116,15 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
             <Home className="w-6 h-6 text-blue-400" />
             <input
               type="text"
+              id="otherType"
+              name="otherType"
               value={value.otherType}
               onChange={(e) => updateField('otherType', e.target.value)}
               onFocus={() => setFocusedField('otherType')}
               onBlur={() => setFocusedField(null)}
               placeholder="Please specify the property type"
               className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
+              required={value.propertyType === 'other'} // Conditionally required
             />
           </div>
         )}
@@ -333,12 +336,17 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
           <Ruler className="w-6 h-6 text-blue-400" />
           <input
             type="text"
+            id="squareFootage"
+            name="squareFootage"
+            inputMode="numeric" // Better for mobile keyboards
+            pattern="[0-9]*" // Helps with validation
             value={value.squareFootage}
             onChange={(e) => updateField('squareFootage', e.target.value.replace(/\D/g, ''))}
             onFocus={() => setFocusedField('squareFootage')}
             onBlur={() => setFocusedField(null)}
             placeholder="Enter square footage"
             className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
+            required
           />
           <span className="text-white/60">sq ft</span>
           </div>

@@ -53,6 +53,8 @@ const TargetBuyerStep: React.FC<TargetBuyerStepProps> = ({ value, onChange, onNe
             ${focusedField === 'idealBuyer' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <FileText className="w-6 h-6 text-blue-400 mt-1" />
             <textarea
+              id="idealBuyer"
+              name="idealBuyer"
               value={value.idealBuyer}
               onChange={(e) => updateField('idealBuyer', e.target.value)}
               onFocus={() => setFocusedField('idealBuyer')}
@@ -60,6 +62,7 @@ const TargetBuyerStep: React.FC<TargetBuyerStepProps> = ({ value, onChange, onNe
               placeholder="First-time buyers, young professionals, growing families, etc."
               rows={3}
               className="w-full bg-transparent border-none outline-none text-white/90 placeholder-white/40 resize-none"
+              required
             />
           </div>
         </div>
@@ -71,6 +74,8 @@ const TargetBuyerStep: React.FC<TargetBuyerStepProps> = ({ value, onChange, onNe
             ${focusedField === 'lifestyle' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <FileText className="w-6 h-6 text-blue-400 mt-1" />
             <textarea
+              id="lifestyle"
+              name="lifestyle"
               value={value.lifestyle}
               onChange={(e) => updateField('lifestyle', e.target.value)}
               onFocus={() => setFocusedField('lifestyle')}
@@ -78,6 +83,7 @@ const TargetBuyerStep: React.FC<TargetBuyerStepProps> = ({ value, onChange, onNe
               placeholder="Active outdoor lifestyle, work-from-home setup, entertaining friends..."
               rows={3}
               className="w-full bg-transparent border-none outline-none text-white/90 placeholder-white/40 resize-none"
+              required
             />
           </div>
         </div>
@@ -89,6 +95,8 @@ const TargetBuyerStep: React.FC<TargetBuyerStepProps> = ({ value, onChange, onNe
             ${focusedField === 'propertyAppeal' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <FileText className="w-6 h-6 text-blue-400 mt-1" />
             <textarea
+              id="propertyAppeal"
+              name="propertyAppeal"
               value={value.propertyAppeal}
               onChange={(e) => updateField('propertyAppeal', e.target.value)}
               onFocus={() => setFocusedField('propertyAppeal')}
@@ -96,6 +104,7 @@ const TargetBuyerStep: React.FC<TargetBuyerStepProps> = ({ value, onChange, onNe
               placeholder="Specific features or aspects that match their needs..."
               rows={3}
               className="w-full bg-transparent border-none outline-none text-white/90 placeholder-white/40 resize-none"
+              required
             />
           </div>
         </div>
@@ -107,6 +116,8 @@ const TargetBuyerStep: React.FC<TargetBuyerStepProps> = ({ value, onChange, onNe
             ${focusedField === 'neighborhoodAppeal' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <FileText className="w-6 h-6 text-blue-400 mt-1" />
             <textarea
+              id="neighborhoodAppeal"
+              name="neighborhoodAppeal"
               value={value.neighborhoodAppeal}
               onChange={(e) => updateField('neighborhoodAppeal', e.target.value)}
               onFocus={() => setFocusedField('neighborhoodAppeal')}
@@ -114,6 +125,7 @@ const TargetBuyerStep: React.FC<TargetBuyerStepProps> = ({ value, onChange, onNe
               placeholder="Local amenities, community features, location benefits..."
               rows={3}
               className="w-full bg-transparent border-none outline-none text-white/90 placeholder-white/40 resize-none"
+              required
             />
           </div>
         </div>

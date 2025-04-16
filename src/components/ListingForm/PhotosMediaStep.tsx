@@ -2,7 +2,7 @@ import React, { useState, useRef, useCallback } from 'react';
 import { Camera, Upload, X, Image as ImageIcon, Video, GripVertical, Trash2, Loader2, AlertCircle } from 'lucide-react';
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { v4 as uuidv4 } from 'uuid';
-import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd'; // Updated import path
 
 // Import the simplified PhotoUploadInfo from ListingForm
 import { PhotoUploadInfo } from '../../pages/ListingForm';
@@ -72,10 +72,10 @@ const PhotosMediaStep: React.FC<PhotosMediaStepProps> = ({
         ACL: 'public-read' as const,
       });
 
-      console.log(`Attempting S3 upload for key: ${key}`);
+      // console.log(`Attempting S3 upload for key: ${key}`); // Removed log
       await s3Client.send(command);
       const url = `https://${bucketName}.s3.${awsRegion}.amazonaws.com/${key}`;
-      console.log(`Successfully uploaded ${key} to ${url}`);
+      // console.log(`Successfully uploaded ${key} to ${url}`); // Removed log
 
       // Add the successfully uploaded photo to the parent state
       const newUpload: PhotoUploadInfo = { id: photoId, s3Key: key, s3Url: url };
@@ -301,6 +301,8 @@ const PhotosMediaStep: React.FC<PhotosMediaStepProps> = ({
             <ImageIcon className="w-6 h-6 text-blue-400" />
             <input
               type="url"
+              id="virtualTourUrl"
+              name="virtualTourUrl"
               value={value.virtualTourUrl || ''}
               onChange={(e) => onChange({ ...value, virtualTourUrl: e.target.value })}
               onFocus={() => setFocusedField('virtualTour')}
@@ -318,6 +320,8 @@ const PhotosMediaStep: React.FC<PhotosMediaStepProps> = ({
             <Video className="w-6 h-6 text-blue-400" />
             <input
               type="url"
+              id="videoUrl"
+              name="videoUrl"
               value={value.videoUrl || ''}
               onChange={(e) => onChange({ ...value, videoUrl: e.target.value })}
               onFocus={() => setFocusedField('video')}

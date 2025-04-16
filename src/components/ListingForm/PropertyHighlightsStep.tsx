@@ -54,6 +54,8 @@ const PropertyHighlightsStep: React.FC<PropertyHighlightsStepProps> = ({ value, 
             ${focusedField === 'topFeatures' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <FileText className="w-6 h-6 text-blue-400 mt-1" />
             <textarea
+              id="topFeatures"
+              name="topFeatures"
               value={value.topFeatures}
               onChange={(e) => updateField('topFeatures', e.target.value)}
               onFocus={() => setFocusedField('topFeatures')}
@@ -61,6 +63,7 @@ const PropertyHighlightsStep: React.FC<PropertyHighlightsStepProps> = ({ value, 
               placeholder="Examples: Open-concept kitchen, large backyard, lake view, school zone, etc."
               rows={3}
               className="w-full bg-transparent border-none outline-none text-white/90 placeholder-white/40 resize-none"
+              required
             />
           </div>
         </div>
@@ -72,6 +75,8 @@ const PropertyHighlightsStep: React.FC<PropertyHighlightsStepProps> = ({ value, 
             ${focusedField === 'wowFactor' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <FileText className="w-6 h-6 text-blue-400 mt-1" />
             <textarea
+              id="wowFactor"
+              name="wowFactor"
               value={value.wowFactor}
               onChange={(e) => updateField('wowFactor', e.target.value)}
               onFocus={() => setFocusedField('wowFactor')}
@@ -79,6 +84,7 @@ const PropertyHighlightsStep: React.FC<PropertyHighlightsStepProps> = ({ value, 
               placeholder="What's the one feature that makes this property stand out from others?"
               rows={3}
               className="w-full bg-transparent border-none outline-none text-white/90 placeholder-white/40 resize-none"
+              required
             />
           </div>
         </div>
@@ -90,6 +96,8 @@ const PropertyHighlightsStep: React.FC<PropertyHighlightsStepProps> = ({ value, 
             ${focusedField === 'firstImpression' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <FileText className="w-6 h-6 text-blue-400 mt-1" />
             <textarea
+              id="firstImpression"
+              name="firstImpression"
               value={value.firstImpression}
               onChange={(e) => updateField('firstImpression', e.target.value)}
               onFocus={() => setFocusedField('firstImpression')}
@@ -97,6 +105,7 @@ const PropertyHighlightsStep: React.FC<PropertyHighlightsStepProps> = ({ value, 
               placeholder="What's the first positive reaction most visitors have?"
               rows={3}
               className="w-full bg-transparent border-none outline-none text-white/90 placeholder-white/40 resize-none"
+              required
             />
           </div>
         </div>
@@ -108,6 +117,8 @@ const PropertyHighlightsStep: React.FC<PropertyHighlightsStepProps> = ({ value, 
             ${focusedField === 'hiddenGems' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <FileText className="w-6 h-6 text-blue-400 mt-1" />
             <textarea
+              id="hiddenGems"
+              name="hiddenGems"
               value={value.hiddenGems}
               onChange={(e) => updateField('hiddenGems', e.target.value)}
               onFocus={() => setFocusedField('hiddenGems')}
@@ -115,6 +126,7 @@ const PropertyHighlightsStep: React.FC<PropertyHighlightsStepProps> = ({ value, 
               placeholder="Hidden features or benefits that add value"
               rows={3}
               className="w-full bg-transparent border-none outline-none text-white/90 placeholder-white/40 resize-none"
+              required
             />
           </div>
         </div>
