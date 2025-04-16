@@ -341,7 +341,8 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
                      ${isSubmitting
                        ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
                        : 'bg-blue-500/90 hover:bg-blue-500 text-white hover:shadow-[0_0_30px_rgba(59,130,246,0.3)]'
-                     }`}
+                     }
+                     hidden md:flex`} // Hide on mobile, show on desktop (flex)
         >
           {isSubmitting ? (
             <>

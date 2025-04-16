@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Import useEffect
 import { Wrench, Plus, Calendar, Check } from 'lucide-react';
 
 interface UpgradeInfo {
@@ -14,9 +14,10 @@ interface PropertyUpgradesStepProps {
   value: PropertyUpgradesInfo;
   onChange: (value: PropertyUpgradesInfo) => void;
   onNext: () => void;
+  onValidationChange: (isValid: boolean) => void; // Add prop for validation status
 }
 
-const PropertyUpgradesStep: React.FC<PropertyUpgradesStepProps> = ({ value, onChange, onNext }) => {
+const PropertyUpgradesStep: React.FC<PropertyUpgradesStepProps> = ({ value, onChange, onNext, onValidationChange }) => { // Destructure new prop
   const [focusedField, setFocusedField] = useState<string | null>(null);
   // Removed old state and logic
 
@@ -31,6 +32,12 @@ const PropertyUpgradesStep: React.FC<PropertyUpgradesStepProps> = ({ value, onCh
     // No validation needed as step is optional, directly call onNext
     onNext();
   };
+
+  // Effect to notify parent component (ListingForm) about validation status changes
+  // This step is always valid, so it will always call back with true.
+  useEffect(() => {
+    onValidationChange(isValid());
+  }, [value, onValidationChange]); // Re-run when value or the callback changes
 
   return (
     <div className="space-y-6">
@@ -75,9 +82,10 @@ const PropertyUpgradesStep: React.FC<PropertyUpgradesStepProps> = ({ value, onCh
           disabled={!isValid()} // Keep disabled logic pattern even if always true
           className="w-full mt-6 py-4 px-6 bg-blue-500/90 hover:bg-blue-500
                    text-white font-medium rounded-xl transition-all duration-200
-                   hover:shadow-[0_0_30px_rgba(59,130,246,0.3)]"
+                   hover:shadow-[0_0_30px_rgba(59,130,246,0.3)]
+                   hidden md:block" // Hide on mobile, show on desktop
         >
-          Next: Property Highlights {/* Adjust if needed */}
+          Next {/* Removed specific step name */}
         </button>
       </form>
     </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Import useEffect
 import { DollarSign, Eye, Mail } from 'lucide-react';
 
 interface PriceInfo {
@@ -10,9 +10,10 @@ interface PriceStepProps {
   value: PriceInfo;
   onChange: (value: PriceInfo) => void;
   onNext: () => void;
+  onValidationChange: (isValid: boolean) => void; // Add prop for validation status
 }
 
-const PriceStep: React.FC<PriceStepProps> = ({ value, onChange, onNext }) => {
+const PriceStep: React.FC<PriceStepProps> = ({ value, onChange, onNext, onValidationChange }) => { // Destructure new prop
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const updateField = (field: keyof PriceInfo, newValue: string) => {
@@ -37,6 +38,11 @@ const PriceStep: React.FC<PriceStepProps> = ({ value, onChange, onNext }) => {
   const isValid = () => {
     return value.price.trim().length > 0 && value.showPrice !== '';
   };
+
+  // Effect to notify parent component (ListingForm) about validation status changes
+  useEffect(() => {
+    onValidationChange(isValid());
+  }, [value, onValidationChange]); // Re-run when value or the callback changes
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -108,10 +114,11 @@ const PriceStep: React.FC<PriceStepProps> = ({ value, onChange, onNext }) => {
           className="w-full mt-6 py-4 px-6 bg-blue-500/90 hover:bg-blue-500
                    text-white font-medium rounded-xl transition-all duration-200
                    hover:shadow-[0_0_30px_rgba(59,130,246,0.3)]
-                   disabled:opacity-50 disabled:cursor-not-allowed"
+                   disabled:opacity-50 disabled:cursor-not-allowed
+                   hidden md:block" // Hide on mobile, show on desktop
           disabled={!isValid()}
         >
-          Next: Property Upgrades {/* Adjust if needed */}
+          Next {/* Removed specific step name */}
         </button>
       </form>
     </div>

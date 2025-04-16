@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react'; // Import useEffect
 // Removed incorrect Button import
 import { AlertTriangle, CheckCircle, ArrowRight, CornerDownLeft } from 'lucide-react';
 
 interface IntroStepProps {
   onNext: () => void;
+  onValidationChange: (isValid: boolean) => void; // Add prop for validation status
 }
 
-const IntroStep: React.FC<IntroStepProps> = ({ onNext }) => {
+const IntroStep: React.FC<IntroStepProps> = ({ onNext, onValidationChange }) => { // Destructure new prop
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Enter') {
@@ -20,7 +21,9 @@ const IntroStep: React.FC<IntroStepProps> = ({ onNext }) => {
     if (container) {
       container.focus();
     }
-  }, []);
+    // This step is always valid to proceed from
+    onValidationChange(true);
+  }, [onValidationChange]); // Add dependency
 
 
   return (
@@ -77,7 +80,8 @@ const IntroStep: React.FC<IntroStepProps> = ({ onNext }) => {
 
       <button
         onClick={onNext}
-        className="bg-blue-500/90 hover:bg-blue-500 text-white font-semibold text-lg py-3 px-8 rounded-xl transition-all duration-200 hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] flex items-center gap-2 group"
+        className="bg-blue-500/90 hover:bg-blue-500 text-white font-semibold text-lg py-3 px-8 rounded-xl transition-all duration-200 hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] flex items-center gap-2 group
+                   hidden md:flex" // Hide on mobile, show on desktop (flex)
       >
         Start
         <ArrowRight className="w-5 h-5 transition-transform duration-200 group-hover:translate-x-1" />

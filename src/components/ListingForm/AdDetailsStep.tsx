@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Import useEffect
 import { Users, Megaphone, Calendar, MapPin, Plus, DollarSign, Smile, Search, Zap, ShieldCheck, Gem } from 'lucide-react'; // Added emotion icons
 
 interface AdDetailsInfo {
@@ -14,9 +14,10 @@ interface AdDetailsStepProps {
   value: AdDetailsInfo;
   onChange: (value: AdDetailsInfo) => void;
   onNext: () => void;
+  onValidationChange: (isValid: boolean) => void; // Add prop for validation status
 }
 
-const AdDetailsStep: React.FC<AdDetailsStepProps> = ({ value, onChange, onNext }) => {
+const AdDetailsStep: React.FC<AdDetailsStepProps> = ({ value, onChange, onNext, onValidationChange }) => { // Destructure new prop
   const [focusedField, setFocusedField] = useState<string | null>(null);
   // Removed newLocation state
 
@@ -48,12 +49,18 @@ const AdDetailsStep: React.FC<AdDetailsStepProps> = ({ value, onChange, onNext }
 
   const isValid = () => {
     // Ensure objective, budget, at least one location, duration, and emotion are selected
-    return value.objective &&
+    // Wrap with !!() to ensure a boolean is always returned
+    return !!(value.objective &&
            value.dailyBudget &&
            value.targetLocations.some((loc: string) => loc.trim() !== '') &&
            value.duration &&
-           value.targetEmotion !== ''; // Added emotion check
+           value.targetEmotion !== ''); // Added emotion check
   };
+
+ // Effect to notify parent component (ListingForm) about validation status changes
+ useEffect(() => {
+   onValidationChange(isValid());
+ }, [value, onValidationChange]); // Re-run when value or the callback changes
 
   const setDefaultEndDate = () => {
     const date = new Date();
@@ -260,13 +267,14 @@ const AdDetailsStep: React.FC<AdDetailsStepProps> = ({ value, onChange, onNext }
 
         <button
           type="submit"
-          className="w-full mt-6 py-4 px-6 bg-blue-500/90 hover:bg-blue-500 
+          className="w-full mt-6 py-4 px-6 bg-blue-500/90 hover:bg-blue-500
                    text-white font-medium rounded-xl transition-all duration-200
                    hover:shadow-[0_0_30px_rgba(59,130,246,0.3)]
-                   disabled:opacity-50 disabled:cursor-not-allowed"
+                   disabled:opacity-50 disabled:cursor-not-allowed
+                   hidden md:block" // Hide on mobile, show on desktop
           disabled={!isValid()}
         >
-          Next {/* Changed button text */}
+          Next {/* Removed specific step name */}
         </button>
       </form>
     </div>

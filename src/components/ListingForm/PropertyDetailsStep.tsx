@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Import useEffect
 import { Building2, Home, Building, Bed, Bath, Ruler } from 'lucide-react';
 
 interface PropertyDetailsInfo {
@@ -21,9 +21,10 @@ interface PropertyDetailsStepProps {
   value: PropertyDetailsInfo;
   onChange: (value: PropertyDetailsInfo) => void;
   onNext: () => void;
+  onValidationChange: (isValid: boolean) => void; // Add prop for validation status
 }
 
-const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChange, onNext }) => {
+const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChange, onNext, onValidationChange }) => { // Destructure new prop
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const updateField = (field: keyof PropertyDetailsInfo, newValue: string) => {
@@ -31,22 +32,28 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
   };
 
   const isValid = () => {
-    return (
+    // Ensure the function always returns a boolean using double negation !!()
+    return !!(
       value.propertyType.trim().length > 0 &&
       (value.propertyType !== 'other' || (value.otherType && value.otherType.trim().length > 0)) &&
       (value.propertyType !== 'condo' || value.hasDen !== undefined) &&
-      ((value.propertyType !== 'freehold' && value.propertyType !== 'townhouse' && value.propertyType !== 'other') || 
-        (value.hasBasement !== undefined && 
-          (value.hasBasement === 'no' || 
-            (value.basementType && 
-             value.basementBedrooms !== undefined && 
-             value.basementBathrooms !== undefined && 
+      ((value.propertyType !== 'freehold' && value.propertyType !== 'townhouse' && value.propertyType !== 'other') ||
+        (value.hasBasement !== undefined &&
+          (value.hasBasement === 'no' ||
+            (value.basementType &&
+             value.basementBedrooms !== undefined &&
+             value.basementBathrooms !== undefined &&
              value.hasBasementEntrance !== undefined)))) &&
       value.squareFootage.trim().length > 0 &&
       value.bedrooms.trim().length > 0 &&
       value.bathrooms.trim().length > 0
     );
   };
+
+  // Effect to notify parent component (ListingForm) about validation status changes
+  useEffect(() => {
+    onValidationChange(isValid());
+  }, [value, onValidationChange]); // Re-run when value or the callback changes
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -355,13 +362,14 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
         {/* Rule 8: Next button styling is already consistent */}
         <button
           type="submit"
-          className="w-full mt-6 py-4 px-6 bg-blue-500/90 hover:bg-blue-500 
+          className="w-full mt-6 py-4 px-6 bg-blue-500/90 hover:bg-blue-500
                    text-white font-medium rounded-xl transition-all duration-200
                    hover:shadow-[0_0_30px_rgba(59,130,246,0.3)]
-                   disabled:opacity-50 disabled:cursor-not-allowed"
+                   disabled:opacity-50 disabled:cursor-not-allowed
+                   hidden md:block" // Hide on mobile, show on desktop
           disabled={!isValid()}
         >
-          Next: Listing Price
+          Next {/* Removed specific step name */}
         </button>
       </form>
     </div>

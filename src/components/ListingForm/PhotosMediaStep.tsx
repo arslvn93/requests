@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react'; // Import useEffect
 import { Camera, Upload, X, Image as ImageIcon, Video, GripVertical, Trash2, Loader2, AlertCircle } from 'lucide-react';
 import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { v4 as uuidv4 } from 'uuid';
@@ -20,6 +20,7 @@ interface PhotosMediaStepProps {
   onChange: (value: PhotosMediaData) => void; // To update photosMedia part of state
   onListingIdChange: (id: string) => void; // To update listingId in parent state
   onNext: () => void;
+  onValidationChange: (isValid: boolean) => void; // Add prop for validation status
 }
 
 // --- S3 Client Configuration ---
@@ -40,7 +41,8 @@ const PhotosMediaStep: React.FC<PhotosMediaStepProps> = ({
   listingId,
   onChange,
   onListingIdChange,
-  onNext
+  onNext,
+  onValidationChange // Destructure new prop
 }) => {
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [uploadingFiles, setUploadingFiles] = useState<Set<string>>(new Set()); // Track files currently uploading by a temporary ID
@@ -176,6 +178,11 @@ const PhotosMediaStep: React.FC<PhotosMediaStepProps> = ({
     // Check if minimum photos are uploaded and no uploads are currently in progress
     return value.uploads.length >= MIN_PHOTOS && uploadingFiles.size === 0;
   };
+
+  // Effect to notify parent component (ListingForm) about validation status changes
+  useEffect(() => {
+    onValidationChange(isValid());
+  }, [value.uploads, uploadingFiles, onValidationChange]); // Re-run when uploads or uploading status changes
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -336,9 +343,11 @@ const PhotosMediaStep: React.FC<PhotosMediaStepProps> = ({
         <button
           type="submit"
           disabled={!isValid()}
-          className="w-full mt-6 py-4 px-6 bg-blue-500/90 hover:bg-blue-500 text-white font-medium rounded-xl transition-all duration-200 hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full mt-6 py-4 px-6 bg-blue-500/90 hover:bg-blue-500 text-white font-medium rounded-xl transition-all duration-200 hover:shadow-[0_0_30px_rgba(59,130,246,0.3)] disabled:opacity-50 disabled:cursor-not-allowed
+                   hidden md:block" // Hide on mobile, show on desktop
         >
-          {uploadingFiles.size > 0 ? 'Waiting for uploads...' : `Next: Review Listing (${value.uploads.length}/${MIN_PHOTOS} photos)`}
+          {/* Keep dynamic text for desktop, but simplify */}
+          {uploadingFiles.size > 0 ? 'Waiting for uploads...' : 'Next'}
         </button>
       </form>
     </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Import useEffect
 import { User, Phone, Mail, MessageSquare } from 'lucide-react';
 
 interface ContactInfo {
@@ -12,9 +12,10 @@ interface ContactStepProps {
   value: ContactInfo;
   onChange: (value: ContactInfo) => void;
   onNext: () => void;
+  onValidationChange: (isValid: boolean) => void; // Add prop for validation status
 }
 
-const ContactStep: React.FC<ContactStepProps> = ({ value, onChange, onNext }) => {
+const ContactStep: React.FC<ContactStepProps> = ({ value, onChange, onNext, onValidationChange }) => { // Destructure new prop
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const updateField = (field: keyof ContactInfo, newValue: string) => {
@@ -29,6 +30,11 @@ const ContactStep: React.FC<ContactStepProps> = ({ value, onChange, onNext }) =>
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.email)
     );
   };
+
+  // Effect to notify parent component (ListingForm) about validation status changes
+  useEffect(() => {
+    onValidationChange(isValid());
+  }, [value, onValidationChange]); // Re-run when value or the callback changes
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -133,13 +139,14 @@ const ContactStep: React.FC<ContactStepProps> = ({ value, onChange, onNext }) =>
         {/* Rule 8: Next button styling is already consistent */}
         <button
           type="submit"
-          className="w-full mt-6 py-4 px-6 bg-blue-500/90 hover:bg-blue-500 
+          className="w-full mt-6 py-4 px-6 bg-blue-500/90 hover:bg-blue-500
                    text-white font-medium rounded-xl transition-all duration-200
                    hover:shadow-[0_0_30px_rgba(59,130,246,0.3)]
-                   disabled:opacity-50 disabled:cursor-not-allowed"
+                   disabled:opacity-50 disabled:cursor-not-allowed
+                   hidden md:block" // Hide on mobile, show on desktop
           disabled={!isValid()}
         >
-          Next: Property Address
+          Next {/* Removed specific step name */}
         </button>
       </form>
     </div>

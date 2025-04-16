@@ -19,20 +19,20 @@ const FormProgress: React.FC<FormProgressProps> = ({ currentStep, totalSteps, on
           style={{ width: `${progress}%` }}
         />
       </div>
-      <div className="flex items-center justify-between px-4 py-3">
+      {/* Container for the top back button - hidden on mobile, flex on desktop */}
+      <div className="hidden md:flex items-center justify-start px-4 py-3"> {/* Changed justify-between to justify-start */}
         {showBack ? (
           <button
             onClick={onBack}
             className="text-white/60 hover:text-white transition-colors p-2 touch-manipulation"
+            aria-label="Go back" // Added aria-label
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
         ) : (
-          <div className="w-10" />
+          <div className="w-10 h-10" /> // Keep placeholder for alignment if needed, added height
         )}
-        <button className="text-white/60 hover:text-white text-sm">
-          Save Draft
-        </button>
+        {/* "Save Draft" button removed */}
       </div>
     </div>
   );

@@ -17,6 +17,7 @@ import PhotosMediaStep from '../components/ListingForm/PhotosMediaStep'; // Assu
 import ReviewStep from '../components/ListingForm/ReviewStep';
 import SuccessStep from '../components/ListingForm/SuccessStep';
 import IntroStep from '../components/ListingForm/IntroStep'; // Import the new IntroStep
+import MobileFormNavigation from '../components/ListingForm/MobileFormNavigation'; // Import the mobile nav
 
 // Define the structure for individual photo upload state
 // Exporting these allows PhotosMediaStep and ReviewStep to import them if needed
@@ -133,6 +134,7 @@ const ListingForm: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [submissionMessage, setSubmissionMessage] = useState('');
+  const [isCurrentStepValid, setIsCurrentStepValid] = useState(false); // State for mobile nav button enablement
 
   const totalSteps = 12;
 
@@ -314,19 +316,22 @@ const ListingForm: React.FC = () => {
               currentStep={currentStep} // Pass the actual current step (1-12)
               totalSteps={totalSteps} // Total steps remain 12 (excluding intro)
               onBack={handleBack}
-              showBack={currentStep > 1} // Show back button only after step 1
+              showBack={currentStep > 1} // Show back button only after step 1 (for desktop)
             />
           )}
-          <div className={`max-w-2xl mx-auto px-4 pb-8 ${currentStep > 0 ? 'pt-24' : 'pt-0'}`}> {/* Adjust top padding */}
+          {/* Main content area - Added responsive padding-bottom (pb-24) for mobile nav */}
+          {/* Changed pt-24 to pt-12 md:pt-24 for smaller top padding on mobile */}
+          <div className={`max-w-2xl mx-auto px-4 pb-24 md:pb-8 ${currentStep > 0 ? 'pt-12 md:pt-24' : 'pt-0'}`}>
             {/* Render the current step based on currentStep */}
             {currentStep === 0 && ( // Render Intro Step
-              <IntroStep onNext={handleNext} />
+              <IntroStep onNext={handleNext} onValidationChange={setIsCurrentStepValid} />
             )}
             {currentStep === 1 && (
               <ContactStep
                 value={formData.contact}
                 onChange={(value) => updateFormData('contact', value)}
                 onNext={handleNext}
+                onValidationChange={setIsCurrentStepValid}
               />
             )}
              {currentStep === 2 && (
@@ -334,6 +339,7 @@ const ListingForm: React.FC = () => {
                 value={formData.address}
                 onChange={(value) => updateFormData('address', value)}
                 onNext={handleNext}
+                onValidationChange={setIsCurrentStepValid}
               />
             )}
             {currentStep === 3 && (
@@ -341,6 +347,7 @@ const ListingForm: React.FC = () => {
                 value={formData.propertyDetails}
                 onChange={(value) => updateFormData('propertyDetails', value)}
                 onNext={handleNext}
+                onValidationChange={setIsCurrentStepValid}
               />
             )}
             {currentStep === 4 && (
@@ -348,6 +355,7 @@ const ListingForm: React.FC = () => {
                 value={{ price: formData.propertyDetails.price, showPrice: formData.propertyDetails.showPrice }}
                 onChange={(value) => updateFormData('propertyDetails', { ...formData.propertyDetails, ...value })}
                 onNext={handleNext}
+                onValidationChange={setIsCurrentStepValid}
               />
             )}
             {currentStep === 5 && (
@@ -355,6 +363,7 @@ const ListingForm: React.FC = () => {
                 value={formData.propertyUpgrades}
                 onChange={(value) => updateFormData('propertyUpgrades', value)}
                 onNext={handleNext}
+                onValidationChange={setIsCurrentStepValid}
               />
             )}
             {currentStep === 6 && (
@@ -362,6 +371,7 @@ const ListingForm: React.FC = () => {
                 value={formData.propertyHighlights}
                 onChange={(value) => updateFormData('propertyHighlights', value)}
                 onNext={handleNext}
+                onValidationChange={setIsCurrentStepValid}
               />
             )}
             {currentStep === 7 && (
@@ -369,6 +379,7 @@ const ListingForm: React.FC = () => {
                 value={formData.investmentPotential}
                 onChange={(value) => updateFormData('investmentPotential', value)}
                 onNext={handleNext}
+                onValidationChange={setIsCurrentStepValid}
               />
             )}
             {currentStep === 8 && (
@@ -376,6 +387,7 @@ const ListingForm: React.FC = () => {
                 value={formData.neighborhoodInfo}
                 onChange={(value) => updateFormData('neighborhoodInfo', value)}
                 onNext={handleNext}
+                onValidationChange={setIsCurrentStepValid}
               />
             )}
             {currentStep === 9 && (
@@ -383,6 +395,7 @@ const ListingForm: React.FC = () => {
                 value={formData.targetBuyer}
                 onChange={(value) => updateFormData('targetBuyer', value)}
                 onNext={handleNext}
+                onValidationChange={setIsCurrentStepValid}
               />
             )}
             {currentStep === 10 && (
@@ -390,6 +403,7 @@ const ListingForm: React.FC = () => {
                 value={formData.adDetails}
                 onChange={(value) => updateFormData('adDetails', value)}
                 onNext={handleNext}
+                onValidationChange={setIsCurrentStepValid}
               />
             )}
              {currentStep === 11 && (
@@ -399,6 +413,7 @@ const ListingForm: React.FC = () => {
                 onChange={updatePhotosMedia} // Pass specific updater for photosMedia
                 onListingIdChange={handleListingIdChange} // Pass handler for listingId
                 onNext={handleNext}
+                onValidationChange={setIsCurrentStepValid}
               />
             )}
             {currentStep === 12 && (
@@ -411,6 +426,16 @@ const ListingForm: React.FC = () => {
               />
             )}
           </div>
+
+          {/* Render Mobile Navigation */}
+          <MobileFormNavigation
+            onBack={handleBack}
+            onNext={handleNext}
+            onSubmit={handleSubmit}
+            isBackDisabled={currentStep === 0} // Disable back on Intro step
+            isNextDisabled={!isCurrentStepValid && currentStep !== 0} // Disable next if step invalid (except intro)
+            isReviewStep={currentStep === totalSteps}
+          />
         </>
       )}
     </div>

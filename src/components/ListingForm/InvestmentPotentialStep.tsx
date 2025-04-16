@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Import useEffect
 // Removed duplicate import on the next line
 import { TrendingUp, DollarSign, Calculator, FileText } from 'lucide-react';
 
@@ -14,9 +14,10 @@ interface InvestmentPotentialStepProps {
   value: InvestmentPotentialInfo;
   onChange: (value: InvestmentPotentialInfo) => void;
   onNext: () => void;
+  onValidationChange: (isValid: boolean) => void; // Add prop for validation status
 }
 
-const InvestmentPotentialStep: React.FC<InvestmentPotentialStepProps> = ({ value, onChange, onNext }) => {
+const InvestmentPotentialStep: React.FC<InvestmentPotentialStepProps> = ({ value, onChange, onNext, onValidationChange }) => { // Destructure new prop
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
   const investmentHighlights = [
@@ -55,6 +56,11 @@ const InvestmentPotentialStep: React.FC<InvestmentPotentialStepProps> = ({ value
     // Step is valid if the initial question is answered
     return value.isGoodInvestment !== '';
   };
+
+  // Effect to notify parent component (ListingForm) about validation status changes
+  useEffect(() => {
+    onValidationChange(isValid());
+  }, [value, onValidationChange]); // Re-run when value or the callback changes
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -186,13 +192,14 @@ const InvestmentPotentialStep: React.FC<InvestmentPotentialStepProps> = ({ value
 
         <button
           type="submit"
-          className="w-full mt-6 py-4 px-6 bg-blue-500/90 hover:bg-blue-500 
+          className="w-full mt-6 py-4 px-6 bg-blue-500/90 hover:bg-blue-500
                    text-white font-medium rounded-xl transition-all duration-200
                    hover:shadow-[0_0_30px_rgba(59,130,246,0.3)]
-                   disabled:opacity-50 disabled:cursor-not-allowed"
+                   disabled:opacity-50 disabled:cursor-not-allowed
+                   hidden md:block" // Hide on mobile, show on desktop
           disabled={!isValid()}
         >
-          Next: Neighborhood Information
+          Next {/* Removed specific step name */}
         </button>
       </form>
     </div>
