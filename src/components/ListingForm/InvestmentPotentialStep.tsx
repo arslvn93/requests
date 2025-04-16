@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+// Removed duplicate import on the next line
 import { TrendingUp, DollarSign, Calculator, FileText } from 'lucide-react';
 
 interface InvestmentPotentialInfo {
+  isGoodInvestment: 'yes' | 'no' | ''; // Added field
   rentalIncome: string;
   propertyAppreciation: string;
   developmentPlans: string;
@@ -44,13 +46,14 @@ const InvestmentPotentialStep: React.FC<InvestmentPotentialStepProps> = ({ value
     onChange({ ...value, rentalIncome: e.target.value.replace(/\D/g, '') });
   };
 
+  // Update field function
+  const updateField = (field: keyof InvestmentPotentialInfo, newValue: any) => {
+    onChange({ ...value, [field]: newValue });
+  };
+
   const isValid = () => {
-    return (
-      value.rentalIncome.trim().length > 0 &&
-      value.propertyAppreciation.trim().length > 0 &&
-      value.developmentPlans.trim().length > 0 &&
-      value.investmentHighlights.length > 0
-    );
+    // Step is valid if the initial question is answered
+    return value.isGoodInvestment !== '';
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -67,11 +70,42 @@ const InvestmentPotentialStep: React.FC<InvestmentPotentialStepProps> = ({ value
           <p className="text-white/60">Highlight the property's investment value</p>
         </div>
       </div>
-      
+
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-2">
-          <p className="text-white/90">What's the potential monthly rental income?</p>
-          <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
+        {/* --- New Yes/No Question --- */}
+        <div className="space-y-3">
+          <p className="text-white/90">Is this property a good investment opportunity?</p>
+          <div className="flex gap-4">
+            <button
+              type="button"
+              onClick={() => updateField('isGoodInvestment', 'yes')}
+              className={`flex-1 p-3 rounded-xl text-center transition-all duration-200
+                ${value.isGoodInvestment === 'yes'
+                  ? 'bg-blue-500 text-white'
+                  : 'glass-card text-white/90 hover:border-blue-400'}`}
+            >
+              Yes
+            </button>
+            <button
+              type="button"
+              onClick={() => updateField('isGoodInvestment', 'no')}
+              className={`flex-1 p-3 rounded-xl text-center transition-all duration-200
+                ${value.isGoodInvestment === 'no'
+                  ? 'bg-blue-500 text-white'
+                  : 'glass-card text-white/90 hover:border-blue-400'}`}
+            >
+              No
+            </button>
+          </div>
+        </div>
+
+        {/* --- Conditionally Render Existing Fields --- */}
+        {value.isGoodInvestment === 'yes' && (
+          <>
+            {/* Rule 4: Changed space-y-2 to space-y-3 */}
+            <div className="space-y-3">
+              <p className="text-white/90">What's the potential monthly rental income? (Optional)</p>
+              <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
             ${focusedField === 'rentalIncome' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <DollarSign className="w-6 h-6 text-blue-400" />
             <input
@@ -85,11 +119,12 @@ const InvestmentPotentialStep: React.FC<InvestmentPotentialStepProps> = ({ value
             />
             <span className="text-white/60">/month</span>
           </div>
-        </div>
+            </div>
 
-        <div className="space-y-2">
-          <p className="text-white/90">What's the appreciation potential?</p>
-          <div className={`glass-card flex items-start gap-3 p-4 transition-all duration-200
+            {/* Rule 4: Changed space-y-2 to space-y-3 */}
+            <div className="space-y-3">
+              <p className="text-white/90">What's the appreciation potential? (Optional)</p>
+              <div className={`glass-card flex items-start gap-3 p-4 transition-all duration-200
             ${focusedField === 'propertyAppreciation' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <Calculator className="w-6 h-6 text-blue-400 mt-1" />
             <textarea
@@ -102,11 +137,12 @@ const InvestmentPotentialStep: React.FC<InvestmentPotentialStepProps> = ({ value
               className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40 resize-none"
             />
           </div>
-        </div>
+            </div>
 
-        <div className="space-y-2">
-          <p className="text-white/90">Are there any upcoming development plans in the area?</p>
-          <div className={`glass-card flex items-start gap-3 p-4 transition-all duration-200
+            {/* Rule 4: Changed space-y-2 to space-y-3 */}
+            <div className="space-y-3">
+              <p className="text-white/90">Are there any upcoming development plans in the area? (Optional)</p>
+              <div className={`glass-card flex items-start gap-3 p-4 transition-all duration-200
             ${focusedField === 'developmentPlans' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <FileText className="w-6 h-6 text-blue-400 mt-1" />
             <textarea
@@ -119,11 +155,11 @@ const InvestmentPotentialStep: React.FC<InvestmentPotentialStepProps> = ({ value
               className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40 resize-none"
             />
           </div>
-        </div>
+            </div>
 
-        <div className="space-y-3">
-          <p className="text-white/90">Investment Highlights</p>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="space-y-3">
+              <p className="text-white/90">Investment Highlights (Optional)</p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {investmentHighlights.map((highlight) => (
               <button
                 key={highlight}
@@ -135,8 +171,11 @@ const InvestmentPotentialStep: React.FC<InvestmentPotentialStepProps> = ({ value
                 <span className="text-white/90 text-sm font-medium text-center">{highlight}</span>
               </button>
             ))}
-          </div>
-        </div>
+              </div>
+            </div>
+          </>
+        )}
+        {/* --- End Conditional Rendering --- */}
 
         <button
           type="submit"
@@ -146,7 +185,7 @@ const InvestmentPotentialStep: React.FC<InvestmentPotentialStepProps> = ({ value
                    disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={!isValid()}
         >
-          Next
+          Next: Neighborhood Information
         </button>
       </form>
     </div>

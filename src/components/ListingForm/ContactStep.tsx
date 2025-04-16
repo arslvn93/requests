@@ -37,12 +37,22 @@ const ContactStep: React.FC<ContactStepProps> = ({ value, onChange, onNext }) =>
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-white/90">Contact Information</h2>
-      <p className="text-white/60">Let us know who you are so we can get in touch</p>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
-            ${focusedField === 'firstName' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
+      {/* Rule 2: Added consistent header structure with icon */}
+      <div className="flex items-center gap-3">
+        <User className="w-8 h-8 text-blue-400" />
+        <div>
+          <h2 className="text-2xl font-bold text-white/90">Contact Information</h2>
+          <p className="text-white/60">Let us know who you are so we can get in touch</p>
+        </div>
+      </div>
+      {/* Rule 3: Changed space-y-4 to space-y-6 */}
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Rule 4 & 5: Added Question Block wrapper and Labels */}
+        <div className="space-y-3">
+          <p className="text-white/90">Full Name</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
+              ${focusedField === 'firstName' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <User className="w-6 h-6 text-blue-400" />
             <input
               type="text"
@@ -54,10 +64,10 @@ const ContactStep: React.FC<ContactStepProps> = ({ value, onChange, onNext }) =>
               defaultValue="Taylor"
               className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
             />
-          </div>
-          
-          <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
-            ${focusedField === 'lastName' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
+            </div>
+            
+            <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
+              ${focusedField === 'lastName' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <User className="w-6 h-6 text-blue-400" />
             <input
               type="text"
@@ -69,11 +79,15 @@ const ContactStep: React.FC<ContactStepProps> = ({ value, onChange, onNext }) =>
               defaultValue="Morgado"
               className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
             />
+            </div>
           </div>
         </div>
 
-        <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
-          ${focusedField === 'phone' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
+        {/* Rule 4 & 5: Added Question Block wrapper and Label */}
+        <div className="space-y-3">
+          <p className="text-white/90">Phone Number</p>
+          <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
+            ${focusedField === 'phone' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
           <Phone className="w-6 h-6 text-blue-400" />
           <input
             type="tel"
@@ -84,10 +98,14 @@ const ContactStep: React.FC<ContactStepProps> = ({ value, onChange, onNext }) =>
             placeholder="Phone number"
             className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
           />
+          </div>
         </div>
 
-        <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
-          ${focusedField === 'email' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
+        {/* Rule 4 & 5: Added Question Block wrapper and Label */}
+        <div className="space-y-3">
+          <p className="text-white/90">Email Address</p>
+          <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
+            ${focusedField === 'email' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
           <Mail className="w-6 h-6 text-blue-400" />
           <input
             type="email"
@@ -99,8 +117,10 @@ const ContactStep: React.FC<ContactStepProps> = ({ value, onChange, onNext }) =>
             placeholder="Email address"
             className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
           />
+          </div>
         </div>
 
+        {/* Rule 8: Next button styling is already consistent */}
         <button
           type="submit"
           className="w-full mt-6 py-4 px-6 bg-blue-500/90 hover:bg-blue-500 

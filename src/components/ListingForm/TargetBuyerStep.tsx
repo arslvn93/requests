@@ -46,7 +46,8 @@ const TargetBuyerStep: React.FC<TargetBuyerStepProps> = ({ value, onChange, onNe
       </div>
       
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-2">
+        {/* Rule 4: Changed space-y-2 to space-y-3 */}
+        <div className="space-y-3">
           <p className="text-white/90">Who is the ideal buyer for this property?</p>
           <div className={`glass-card flex items-start gap-3 p-4 transition-all duration-200
             ${focusedField === 'idealBuyer' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
@@ -63,7 +64,8 @@ const TargetBuyerStep: React.FC<TargetBuyerStepProps> = ({ value, onChange, onNe
           </div>
         </div>
 
-        <div className="space-y-2">
+        {/* Rule 4: Changed space-y-2 to space-y-3 */}
+        <div className="space-y-3">
           <p className="text-white/90">What lifestyle does this property support?</p>
           <div className={`glass-card flex items-start gap-3 p-4 transition-all duration-200
             ${focusedField === 'lifestyle' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
@@ -80,7 +82,8 @@ const TargetBuyerStep: React.FC<TargetBuyerStepProps> = ({ value, onChange, onNe
           </div>
         </div>
 
-        <div className="space-y-2">
+        {/* Rule 4: Changed space-y-2 to space-y-3 */}
+        <div className="space-y-3">
           <p className="text-white/90">Why would this property appeal to them?</p>
           <div className={`glass-card flex items-start gap-3 p-4 transition-all duration-200
             ${focusedField === 'propertyAppeal' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
@@ -97,7 +100,8 @@ const TargetBuyerStep: React.FC<TargetBuyerStepProps> = ({ value, onChange, onNe
           </div>
         </div>
 
-        <div className="space-y-2">
+        {/* Rule 4: Changed space-y-2 to space-y-3 */}
+        <div className="space-y-3">
           <p className="text-white/90">What makes this neighborhood perfect for them?</p>
           <div className={`glass-card flex items-start gap-3 p-4 transition-all duration-200
             ${focusedField === 'neighborhoodAppeal' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>

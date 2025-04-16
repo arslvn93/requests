@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FileText } from 'lucide-react';
+import { FileText, Sparkles } from 'lucide-react'; // Added Sparkles icon
 
 interface PropertyHighlightsInfo {
   topFeatures: string;
@@ -37,11 +37,18 @@ const PropertyHighlightsStep: React.FC<PropertyHighlightsStepProps> = ({ value, 
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-white/90">Property Highlights</h2>
-      <p className="text-white/60">Help us showcase what makes this property special</p>
+      {/* Rule 2: Added consistent header structure with icon */}
+      <div className="flex items-center gap-3">
+        <Sparkles className="w-8 h-8 text-blue-400" />
+        <div>
+          <h2 className="text-2xl font-bold text-white/90">Property Highlights</h2>
+          <p className="text-white/60">Help us showcase what makes this property special</p>
+        </div>
+      </div>
       
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="space-y-2">
+        {/* Rule 4: Changed space-y-2 to space-y-3 */}
+        <div className="space-y-3">
           <p className="text-white/90">What are the top 3-5 selling features of this home?</p>
           <div className={`glass-card flex items-start gap-3 p-4 transition-all duration-200
             ${focusedField === 'topFeatures' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
@@ -58,7 +65,8 @@ const PropertyHighlightsStep: React.FC<PropertyHighlightsStepProps> = ({ value, 
           </div>
         </div>
 
-        <div className="space-y-2">
+        {/* Rule 4: Changed space-y-2 to space-y-3 */}
+        <div className="space-y-3">
           <p className="text-white/90">What's the biggest WOW factor about this home?</p>
           <div className={`glass-card flex items-start gap-3 p-4 transition-all duration-200
             ${focusedField === 'wowFactor' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
@@ -75,7 +83,8 @@ const PropertyHighlightsStep: React.FC<PropertyHighlightsStepProps> = ({ value, 
           </div>
         </div>
 
-        <div className="space-y-2">
+        {/* Rule 4: Changed space-y-2 to space-y-3 */}
+        <div className="space-y-3">
           <p className="text-white/90">What's one thing people LOVE when they walk in?</p>
           <div className={`glass-card flex items-start gap-3 p-4 transition-all duration-200
             ${focusedField === 'firstImpression' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
@@ -92,7 +101,8 @@ const PropertyHighlightsStep: React.FC<PropertyHighlightsStepProps> = ({ value, 
           </div>
         </div>
 
-        <div className="space-y-2">
+        {/* Rule 4: Changed space-y-2 to space-y-3 */}
+        <div className="space-y-3">
           <p className="text-white/90">What are some things people don't immediately notice but should?</p>
           <div className={`glass-card flex items-start gap-3 p-4 transition-all duration-200
             ${focusedField === 'hiddenGems' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>

@@ -70,6 +70,12 @@ const PhotosMediaStep: React.FC<PhotosMediaStepProps> = ({ value, onChange, onNe
     return value.photos.length >= 3;
   };
 
+  // Rule 3: Added handleSubmit
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isValid()) onNext();
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
@@ -80,8 +86,12 @@ const PhotosMediaStep: React.FC<PhotosMediaStepProps> = ({ value, onChange, onNe
         </div>
       </div>
 
-      <div className="space-y-6">
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+      {/* Rule 3: Added form wrapper */}
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Rule 4: Added Question Block wrapper for photo grid (optional, but good practice) */}
+        <div className="space-y-3">
+          <p className="text-white/90">Upload Photos (Drag to reorder, minimum 3)</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
           {value.photos.map((file, index) => (
             <div
               key={index}
@@ -131,6 +141,7 @@ const PhotosMediaStep: React.FC<PhotosMediaStepProps> = ({ value, onChange, onNe
             <Upload className="w-8 h-8 text-blue-400" />
             <span className="text-white/90 text-sm">Add Photos</span>
           </button>
+          </div>
         </div>
 
         <input
@@ -176,17 +187,18 @@ const PhotosMediaStep: React.FC<PhotosMediaStepProps> = ({ value, onChange, onNe
           </div>
         </div>
 
-        {isValid() && (
-          <button
-            onClick={onNext}
-            className="w-full mt-6 py-4 px-6 bg-blue-500/90 hover:bg-blue-500
+        {/* Rule 8: Added disabled:opacity-50 disabled:cursor-not-allowed */}
+        <button
+          type="submit"
+          disabled={!isValid()}
+          className="w-full mt-6 py-4 px-6 bg-blue-500/90 hover:bg-blue-500
                      text-white font-medium rounded-xl transition-all duration-200
-                     hover:shadow-[0_0_30px_rgba(59,130,246,0.3)]"
+                     hover:shadow-[0_0_30px_rgba(59,130,246,0.3)]
+                     disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Next: Review Listing
           </button>
-        )}
-      </div>
+      </form>
     </div>
   );
 };

@@ -13,6 +13,8 @@ interface PropertyDetailsInfo {
   squareFootage: string;
   bedrooms: string;
   bathrooms: string;
+  price: string; // Added price
+  showPrice: 'ad' | 'email' | ''; // Updated type
 }
 
 interface PropertyDetailsStepProps {
@@ -53,8 +55,14 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-white/90">Property Details</h2>
-      <p className="text-white/60">Tell us about the property features</p>
+      {/* Rule 2: Added consistent header structure with icon */}
+      <div className="flex items-center gap-3">
+        <Home className="w-8 h-8 text-blue-400" />
+        <div>
+          <h2 className="text-2xl font-bold text-white/90">Property Details</h2>
+          <p className="text-white/60">Tell us about the property features</p>
+        </div>
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="space-y-3">
@@ -147,7 +155,8 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
         )}
 
         {(value.propertyType === 'freehold' || value.propertyType === 'townhouse' || value.propertyType === 'other') && (
-          <div className="space-y-6">
+          /* Rule 4: Changed outer space-y-6 to space-y-3 for consistency within form */
+          <div className="space-y-3">
             <div className="space-y-3">
               <p className="text-white/90">Does this property have a basement?</p>
               <div className="flex gap-4">
@@ -195,8 +204,10 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
                   </div>
                 </div>
 
-                <div>
-                  <p className="text-white/90 mb-3">Basement Bedrooms</p>
+                {/* Rule 4: Added Question Block wrapper */}
+                <div className="space-y-3">
+                  {/* Rule 5: Removed mb-3 */}
+                  <p className="text-white/90">Basement Bedrooms</p>
                   <div className="flex flex-wrap gap-3">
                     {[0, 1, 2, 3, 4].map((number) => (
                       <button
@@ -215,8 +226,10 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
                   </div>
                 </div>
 
-                <div>
-                  <p className="text-white/90 mb-3">Basement Bathrooms</p>
+                {/* Rule 4: Added Question Block wrapper */}
+                <div className="space-y-3">
+                  {/* Rule 5: Removed mb-3 */}
+                  <p className="text-white/90">Basement Bathrooms</p>
                   <div className="flex flex-wrap gap-3">
                     {['0', '1', '1.5', '2', '2.5', '3'].map((number) => (
                       <button
@@ -265,8 +278,10 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
           </div>
         )}
 
-        <div>
-          <p className="text-white/90 mb-3">Bedrooms</p>
+        {/* Rule 4: Added Question Block wrapper */}
+        <div className="space-y-3">
+          {/* Rule 5: Removed mb-3 */}
+          <p className="text-white/90">Bedrooms</p>
           <div className="flex flex-wrap gap-3">
             {[0, 1, 2, 3, 4, 5].map((number) => (
               <button
@@ -286,8 +301,10 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
           </div>
         </div>
 
-        <div>
-          <p className="text-white/90 mb-3">Bathrooms</p>
+        {/* Rule 4: Added Question Block wrapper */}
+        <div className="space-y-3">
+          {/* Rule 5: Removed mb-3 */}
+          <p className="text-white/90">Bathrooms</p>
           <div className="flex flex-wrap gap-3">
             {['1', '1.5', '2', '2.5', '3', '3.5', '4'].map((number) => (
               <button
@@ -307,8 +324,12 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
           </div>
         </div>
 
-        <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
-          ${focusedField === 'squareFootage' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
+        {/* Rule 4: Added Question Block wrapper */}
+        <div className="space-y-3">
+          {/* Rule 5: Removed mb-3 */}
+          <p className="text-white/90">Square Footage</p>
+          <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
+            ${focusedField === 'squareFootage' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
           <Ruler className="w-6 h-6 text-blue-400" />
           <input
             type="text"
@@ -320,8 +341,10 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
             className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
           />
           <span className="text-white/60">sq ft</span>
+          </div>
         </div>
 
+        {/* Rule 8: Next button styling is already consistent */}
         <button
           type="submit"
           className="w-full mt-6 py-4 px-6 bg-blue-500/90 hover:bg-blue-500 
@@ -330,7 +353,7 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
                    disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={!isValid()}
         >
-          Next: Property Upgrades
+          Next: Listing Price
         </button>
       </form>
     </div>

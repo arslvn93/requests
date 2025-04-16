@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Map, Tree, School, Utensils, ShoppingBag, Bus, Road, Waves, Plus } from 'lucide-react';
+import { MapPin, Trees, GraduationCap, UtensilsCrossed, ShoppingBag, TramFront, Car, Waves, Plus, Check } from 'lucide-react'; // Replaced TreePalm with Trees
 
 interface NeighborhoodInfo {
   amenities: string[];
-  otherAmenities?: string;
-  uniqueAdvantages: string;
+  otherAmenity: string;
+  comparison: string;
 }
 
 interface NeighborhoodInfoStepProps {
@@ -13,120 +13,156 @@ interface NeighborhoodInfoStepProps {
   onNext: () => void;
 }
 
+const defaultAmenities = [
+  { value: 'parks', label: 'Parks', icon: Trees }, // Replaced TreePalm with Trees
+  { value: 'schools', label: 'Schools', icon: GraduationCap },
+  { value: 'restaurants', label: 'Restaurants', icon: UtensilsCrossed },
+  { value: 'shopping', label: 'Shopping', icon: ShoppingBag },
+  { value: 'transit', label: 'Public Transit', icon: TramFront },
+  { value: 'highway', label: 'Highway Access', icon: Car },
+  { value: 'waterfront', label: 'Waterfront', icon: Waves },
+];
+
 const NeighborhoodInfoStep: React.FC<NeighborhoodInfoStepProps> = ({ value, onChange, onNext }) => {
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [showOtherInput, setShowOtherInput] = useState(value.amenities.includes('other'));
 
-  const amenityOptions = [
-    { id: 'parks', label: 'Parks', icon: Tree },
-    { id: 'schools', label: 'Schools', icon: School },
-    { id: 'restaurants', label: 'Restaurants', icon: Utensils },
-    { id: 'shopping', label: 'Shopping', icon: ShoppingBag },
-    { id: 'transit', label: 'Public Transit', icon: Bus },
-    { id: 'highway', label: 'Highway Access', icon: Road },
-    { id: 'waterfront', label: 'Waterfront', icon: Waves },
-    { id: 'other', label: 'Other', icon: Plus },
-  ];
+  const toggleAmenity = (amenity: string) => {
+    let newAmenities = [...value.amenities];
+    const isOther = amenity === 'other';
 
-  const toggleAmenity = (amenityId: string) => {
-    if (value.amenities.includes(amenityId)) {
-      onChange({
-        ...value,
-        amenities: value.amenities.filter(a => a !== amenityId),
-        ...(amenityId === 'other' && { otherAmenities: '' })
-      });
-    } else if (value.amenities.length < 3 || value.amenities.includes(amenityId)) {
-      onChange({
-        ...value,
-        amenities: [...value.amenities, amenityId]
-      });
+    if (newAmenities.includes(amenity)) {
+      // Deselecting
+      newAmenities = newAmenities.filter(a => a !== amenity);
+      if (isOther) {
+        setShowOtherInput(false);
+        onChange({ ...value, amenities: newAmenities, otherAmenity: '' }); // Clear other text on deselect
+        return;
+      }
+    } else {
+      // Selecting
+      if (newAmenities.length < 3) {
+        newAmenities.push(amenity);
+        if (isOther) {
+          setShowOtherInput(true);
+        }
+      } else {
+        // Optional: Provide feedback that limit is reached
+        console.log("Maximum 3 amenities selected");
+        return;
+      }
     }
+    onChange({ ...value, amenities: newAmenities });
   };
 
-  const isValid = () => {
-    if (value.amenities.length === 0) return false;
-    if (value.amenities.includes('other') && !value.otherAmenities) return false;
-    if (!value.uniqueAdvantages) return false;
-    return true;
+  const handleOtherAmenityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange({ ...value, otherAmenity: e.target.value });
   };
 
+  const handleComparisonChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    onChange({ ...value, comparison: e.target.value });
+  };
+
+  // This step is optional
+  const isValid = () => true;
+
+  // Rule 3: Added handleSubmit
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (isValid()) onNext();
+    // No validation needed as step is optional, directly call onNext
+    onNext();
   };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-3">
-        <Map className="w-8 h-8 text-blue-400" />
+        <MapPin className="w-8 h-8 text-blue-400" />
         <div>
           <h2 className="text-2xl font-bold text-white/90">Neighborhood Information</h2>
-          <p className="text-white/60">Tell us about the area around the property</p>
+          <p className="text-white/60">Highlight the benefits of the location (optional)</p>
         </div>
       </div>
-      
+
+      {/* Rule 3: Added form wrapper */}
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Amenities Selection */}
         <div className="space-y-3">
           <p className="text-white/90">What local amenities would attract buyers? (Choose up to 3)</p>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {amenityOptions.map(({ id, label, icon: Icon }) => (
+            {defaultAmenities.map(({ value: amenityValue, label, icon: Icon }) => (
               <button
-                key={id}
+                key={amenityValue}
                 type="button"
-                onClick={() => toggleAmenity(id)}
-                disabled={value.amenities.length >= 3 && !value.amenities.includes(id)}
-                className={`glass-card p-4 flex flex-col items-center gap-3 transition-all duration-200
-                  ${value.amenities.includes(id) ? 'border-blue-400 bg-blue-400/10' : ''}
-                  ${value.amenities.length >= 3 && !value.amenities.includes(id) ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                <Icon className="w-6 h-6 text-blue-400" />
-                <span className="text-white/90 text-sm font-medium text-center">{label}</span>
+                onClick={() => toggleAmenity(amenityValue)}
+                className={`glass-card p-4 flex flex-col items-center gap-3 transition-all duration-200 relative
+                  ${value.amenities.includes(amenityValue) ? 'border-blue-400 bg-blue-400/10' : ''}`}>
+                <Icon className="w-8 h-8 text-blue-400" />
+                <span className="text-white/90 font-medium text-center text-sm">{label}</span>
+                {value.amenities.includes(amenityValue) && (
+                   <Check className="absolute top-2 right-2 w-5 h-5 text-blue-400" />
+                 )}
               </button>
             ))}
+            {/* Other Button */}
+            <button
+              type="button"
+              onClick={() => toggleAmenity('other')}
+              className={`glass-card p-4 flex flex-col items-center justify-center gap-3 transition-all duration-200 relative
+                ${value.amenities.includes('other') ? 'border-blue-400 bg-blue-400/10' : ''}`}>
+              <Plus className="w-8 h-8 text-blue-400" />
+              <span className="text-white/90 font-medium text-center text-sm">Other</span>
+               {value.amenities.includes('other') && (
+                 <Check className="absolute top-2 right-2 w-5 h-5 text-blue-400" />
+               )}
+            </button>
           </div>
+          {/* Other Amenity Input */}
+          {showOtherInput && (
+            <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200 mt-4
+              ${focusedField === 'otherAmenity' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
+              <MapPin className="w-6 h-6 text-blue-400" />
+              <input
+                type="text"
+                value={value.otherAmenity}
+                onChange={handleOtherAmenityChange}
+                onFocus={() => setFocusedField('otherAmenity')}
+                onBlur={() => setFocusedField(null)}
+                placeholder="Specify other amenity"
+                className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
+              />
+            </div>
+          )}
         </div>
 
-        {value.amenities.includes('other') && (
-          <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
-            ${focusedField === 'otherAmenities' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
-            <Plus className="w-6 h-6 text-blue-400" />
-            <input
-              type="text"
-              value={value.otherAmenities || ''}
-              onChange={(e) => onChange({ ...value, otherAmenities: e.target.value })}
-              onFocus={() => setFocusedField('otherAmenities')}
-              onBlur={() => setFocusedField(null)}
-              placeholder="Please specify other amenities"
-              className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
-            />
-          </div>
-        )}
-
-        <div className="space-y-2">
+        {/* Comparison Textarea */}
+        {/* Rule 4: Changed space-y-2 to space-y-3 */}
+        <div className="space-y-3">
           <p className="text-white/90">What makes this home better than similar listings in the area?</p>
           <div className={`glass-card flex items-start gap-3 p-4 transition-all duration-200
-            ${focusedField === 'uniqueAdvantages' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
-            <Map className="w-6 h-6 text-blue-400 mt-1" />
+            ${focusedField === 'comparison' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
+            <MapPin className="w-6 h-6 text-blue-400 mt-1" />
             <textarea
-              value={value.uniqueAdvantages}
-              onChange={(e) => onChange({ ...value, uniqueAdvantages: e.target.value })}
-              onFocus={() => setFocusedField('uniqueAdvantages')}
+              value={value.comparison}
+              onChange={handleComparisonChange}
+              onFocus={() => setFocusedField('comparison')}
               onBlur={() => setFocusedField(null)}
-              placeholder="What sets this property apart from others in the neighborhood?"
-              rows={4}
+              placeholder="Highlight unique advantages, features, or value compared to nearby properties..."
+              rows={5}
               className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40 resize-none"
             />
           </div>
         </div>
 
+        {/* Next Button */}
+        {/* Rule 8: Changed type to submit, added disabled attribute */}
         <button
           type="submit"
-          className="w-full mt-6 py-4 px-6 bg-blue-500/90 hover:bg-blue-500 
+          disabled={!isValid()} // Keep disabled logic pattern even if always true
+          className="w-full mt-6 py-4 px-6 bg-blue-500/90 hover:bg-blue-500
                    text-white font-medium rounded-xl transition-all duration-200
-                   hover:shadow-[0_0_30px_rgba(59,130,246,0.3)]
-                   disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={!isValid()}
+                   hover:shadow-[0_0_30px_rgba(59,130,246,0.3)]"
         >
-          Next
+          Next: Target Buyer {/* Adjust if needed */}
         </button>
       </form>
     </div>

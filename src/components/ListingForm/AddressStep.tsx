@@ -40,11 +40,20 @@ const AddressStep: React.FC<AddressStepProps> = ({ value, onChange, onNext }) =>
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-white/90">Property Address</h2>
-      <p className="text-white/60">Where is the property located?</p>
+      {/* Rule 2: Added consistent header structure with icon */}
+      <div className="flex items-center gap-3">
+        <MapPin className="w-8 h-8 text-blue-400" />
+        <div>
+          <h2 className="text-2xl font-bold text-white/90">Property Address</h2>
+          <p className="text-white/60">Where is the property located?</p>
+        </div>
+      </div>
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
-          ${focusedField === 'address' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
+        {/* Rule 4 & 5: Added Question Block wrapper and Label */}
+        <div className="space-y-3">
+          <p className="text-white/90">Street Address</p>
+          <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
+            ${focusedField === 'address' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
           <MapPin className="w-6 h-6 text-blue-400" />
           <input
             type="text"
@@ -55,10 +64,14 @@ const AddressStep: React.FC<AddressStepProps> = ({ value, onChange, onNext }) =>
             placeholder="Street Address"
             className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
           />
+          </div>
         </div>
 
-        <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
-          ${focusedField === 'address2' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
+        {/* Rule 4 & 5: Added Question Block wrapper and Label */}
+        <div className="space-y-3">
+          <p className="text-white/90">Apartment, suite, etc. (Optional)</p>
+          <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
+            ${focusedField === 'address2' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
           <Building2 className="w-6 h-6 text-blue-400" />
           <input
             type="text"
@@ -69,11 +82,15 @@ const AddressStep: React.FC<AddressStepProps> = ({ value, onChange, onNext }) =>
             placeholder="Apartment, suite, unit, etc. (optional)"
             className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
           />
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
-            ${focusedField === 'city' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
+        {/* Rule 4 & 5: Added Question Block wrapper and Labels */}
+        <div className="space-y-3">
+          <p className="text-white/90">City & State/Province</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
+              ${focusedField === 'city' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <input
               type="text"
               value={value.city}
@@ -83,10 +100,10 @@ const AddressStep: React.FC<AddressStepProps> = ({ value, onChange, onNext }) =>
               placeholder="City"
               className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
             />
-          </div>
+            </div>
 
-          <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
-            ${focusedField === 'state' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
+            <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
+              ${focusedField === 'state' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <input
               type="text"
               value={value.state}
@@ -96,12 +113,16 @@ const AddressStep: React.FC<AddressStepProps> = ({ value, onChange, onNext }) =>
               placeholder="State/Province"
               className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
             />
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
-            ${focusedField === 'zipCode' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
+        {/* Rule 4 & 5: Added Question Block wrapper and Labels */}
+        <div className="space-y-3">
+          <p className="text-white/90">ZIP/Postal Code & Country</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
+              ${focusedField === 'zipCode' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <input
               type="text"
               value={value.zipCode}
@@ -111,10 +132,10 @@ const AddressStep: React.FC<AddressStepProps> = ({ value, onChange, onNext }) =>
               placeholder="ZIP/Postal Code"
               className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
             />
-          </div>
+            </div>
 
-          <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
-            ${focusedField === 'country' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
+            <div className={`glass-card flex items-center gap-3 p-4 transition-all duration-200
+              ${focusedField === 'country' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <select
               value={value.country}
               onChange={(e) => updateField('country', e.target.value)}
@@ -125,10 +146,12 @@ const AddressStep: React.FC<AddressStepProps> = ({ value, onChange, onNext }) =>
               <option value="Canada" className="bg-gray-900">Canada</option>
               <option value="United States" className="bg-gray-900">United States</option>
             </select>
-          </div>
-        </div>
+           </div>
+         </div>
+       </div>
 
-        <button
+       {/* Rule 8: Next button styling is already consistent */}
+       <button
           type="submit"
           className="w-full mt-6 py-4 px-6 bg-blue-500/90 hover:bg-blue-500 
                    text-white font-medium rounded-xl transition-all duration-200
