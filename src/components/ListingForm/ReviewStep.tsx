@@ -36,6 +36,19 @@ const formatYesNo = (value?: string) => {
 };
 
 // Define the complete props based on final FormData
+// Import the necessary types from ListingForm or define them here
+// Assuming they are exported from ListingForm.tsx
+import { FormData, PhotoUploadInfo } from '../../pages/ListingForm';
+
+interface ReviewStepProps {
+  formData: FormData; // Use the imported FormData type
+  onSubmit: () => Promise<void>;
+  isSubmitting: boolean;
+  submissionStatus: 'idle' | 'success' | 'error';
+  submissionMessage: string;
+}
+
+/* Remove the old inline definition
 interface ReviewStepProps {
   formData: {
     contact: {
@@ -109,11 +122,12 @@ interface ReviewStepProps {
       videoUrl?: string;
     };
   };
-  onSubmit: () => Promise<void>; // Changed to Promise<void> to reflect async nature
+  onSubmit: () => Promise<void>;
   isSubmitting: boolean;
   submissionStatus: 'idle' | 'success' | 'error';
   submissionMessage: string;
 }
+*/
 
 const ReviewStep: React.FC<ReviewStepProps> = ({
   formData,
@@ -282,16 +296,20 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
         {/* Photos & Media */}
         <Section icon={Camera} title="Photos & Media">
           <div className="space-y-4">
-            {formData.photosMedia.photos.length > 0 ? (
+            {/* Filter for successfully uploaded photos */}
+            {formData.photosMedia.uploads.filter(p => p.status === 'success').length > 0 ? (
                <div className="grid grid-cols-3 sm:grid-cols-4 gap-4">
-                 {formData.photosMedia.photos.map((photo, index) => (
-                   <div key={index} className="relative aspect-square">
+                 {formData.photosMedia.uploads
+                   .filter(p => p.status === 'success') // Ensure only successful uploads are shown
+                   .map((photoInfo) => (
+                   <div key={photoInfo.id} className="relative aspect-square">
                      <img
-                       src={URL.createObjectURL(photo)}
-                       alt={`Property photo ${index + 1}`}
+                       src={photoInfo.s3Url} // Use the S3 URL
+                       alt={`Property photo ${photoInfo.file.name}`} // Use original name for alt text
                        className="w-full h-full object-cover rounded-lg"
                      />
-                     {index === formData.photosMedia.featuredPhotoIndex && (
+                     {/* Check featuredPhotoId against the photo's unique id */}
+                     {photoInfo.id === formData.photosMedia.featuredPhotoId && (
                        <div className="absolute top-2 left-2 px-2 py-1 bg-blue-500 rounded-full text-white text-xs font-medium">
                          Featured
                        </div>
@@ -300,7 +318,7 @@ const ReviewStep: React.FC<ReviewStepProps> = ({
                  ))}
                </div>
             ) : (
-               <p className="text-white/60 italic">No photos uploaded.</p>
+               <p className="text-white/60 italic">No photos successfully uploaded.</p> // Updated message
             )}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
               {formData.photosMedia.virtualTourUrl && <InfoPair label="Virtual Tour URL" value={formData.photosMedia.virtualTourUrl} />}
