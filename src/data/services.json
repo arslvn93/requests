@@ -1,0 +1,70 @@
+{
+  "services": [
+    {
+      "id": "listing-ad",
+      "name": "Listing Ad",
+      "description": "We'll design a compelling ad to showcase your property and attract potential buyers.",
+      "turnaround": "3 Business Days",
+      "icon": "Home",
+      "url": "https://zd7oshiupbh.typeform.com/to/vujZTuzj"
+    },
+  {
+      "id": "giveaway-funnel",
+      "name": "Giveaway Campaign",
+      "description": "Launch a giveaway campaign that captures leads and engages your audience.",
+      "turnaround": "2 Business Days",
+      "icon": "Gift",
+      "url": "https://zd7oshiupbh.typeform.com/to/UnqmDFFM"
+    },
+    {
+      "id": "video-editing",
+      "name": "Professional Video Editing",
+      "description": "We transform your raw footage into a polished, engaging video that showcases your brand.",
+      "turnaround": "3-5 Business Days",
+      "icon": "Video",
+      "url": "https://zd7oshiupbh.typeform.com/to/H9XPgQte"
+    },
+    {
+      "id": "seller-case-study",
+      "name": "Seller Success Story",
+      "description": "We'll create a detailed case study highlighting your achievements and lessons learned.",
+      "turnaround": "3-4 Business Days",
+      "icon": "ThumbsUp",
+      "url": "https://zd7oshiupbh.typeform.com/to/e8uN9Z02"
+    },
+    {
+      "id": "open-house",
+      "name": "Open House Success Kit",
+      "description": "Use our checklist to plan and host an open house that leaves a lasting impression on visitors.",
+      "turnaround": "2 Business Days",
+      "icon": "CalendarCheck",
+      "url": "https://zd7oshiupbh.typeform.com/to/SPun7E3e"
+    },
+    {
+      "id": "new-listing-launch",
+      "name": "New Listing Launch Package",
+      "description": "A comprehensive marketing package to give your new listing the perfect launch.",
+      "turnaround": "Coming Soon",
+      "icon": "Rocket",
+      "url": "#",
+      "comingSoon": true
+    },
+    {
+      "id": "buyer-success-story",
+      "name": "Buyer Success Story",
+      "description": "Share your buyer's journey and success to attract more potential clients.",
+      "turnaround": "3-4 Business Days",
+      "icon": "Users",
+      "url": "https://zd7oshiupbh.typeform.com/to/HbCQNvzV"
+    },
+    {
+      "id": "buyer-intake-form",
+      "name": "Buyer Intake Form",
+      "description": "Streamline your buyer onboarding process with our professional intake form.",
+      "turnaround": "Coming Soon",
+      "icon": "ClipboardCheck",
+      "url": "#",
+      "comingSoon": true
+    }
+  ]
+}
