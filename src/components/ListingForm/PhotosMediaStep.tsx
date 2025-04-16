@@ -68,15 +68,21 @@ const PhotosMediaStep: React.FC<PhotosMediaStepProps> = ({
     const sanitizedFilename = photoInfo.file.name.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9._-]/g, '');
     // Use photoInfo.id for uniqueness in the key
     const key = `listings/${currentListingId}/${photoInfo.id}-${sanitizedFilename}`;
-    const command = new PutObjectCommand({
-      Bucket: bucketName,
-      Key: key,
-      Body: photoInfo.file,
-      ContentType: photoInfo.file.type,
-      ACL: 'public-read',
-    });
-
     try {
+      // Read the file content into an ArrayBuffer first
+      const fileBuffer = await photoInfo.file.arrayBuffer();
+
+      const commandInput = {
+        Bucket: bucketName,
+        Key: key,
+        Body: fileBuffer, // Pass the ArrayBuffer as the Body
+        ContentType: photoInfo.file.type,
+        ACL: 'public-read' as const,
+      };
+      console.log(`Attempting S3 upload for key: ${key} with ContentType: ${commandInput.ContentType}`);
+      const command = new PutObjectCommand(commandInput);
+
+      console.log("Sending command to S3...");
       await s3Client.send(command);
       const url = `https://${bucketName}.s3.${awsRegion}.amazonaws.com/${key}`;
       console.log(`Successfully uploaded ${key} to ${url}`);
