@@ -5,6 +5,7 @@ import { giveawayFormConfig } from './giveaway.config';
 import { videoEditRequestFormConfig } from './video-edit-request.config';
 import { sellerSuccessStoryConfig } from './seller-success-story.config';
 import { buyerSuccessStoryConfig } from './buyer-success-story.config'; // Import Buyer Success config
+import { openHouseFormConfig } from './open-house.config'; // Import Open House config
 // Import other form configs here as they are created
 // import { listingAdFormConfig } from './listing-ad.config'; // Example for future
 
@@ -31,6 +32,8 @@ export const getFormConfig: GetFormConfigFunction = (formTypeId) => {
       return sellerSuccessStoryConfig;
     case 'buyer-success-story':
       return buyerSuccessStoryConfig;
+    case 'open-house': // Add case for Open House form
+      return openHouseFormConfig;
     // Add cases for other form types here
     // case 'listing-ad':
     //   return listingAdFormConfig; // Example

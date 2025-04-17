@@ -295,7 +295,7 @@ const PhotosMediaStep: React.FC<PhotosMediaStepProps> = ({
           ref={fileInputRef}
           type="file"
           accept="image/*"
-          multiple
+          // multiple // Removed to allow only single file selection
           onChange={handleFileChange}
           className="hidden"
           disabled={uploadingFiles.size > 0} // Also disable input itself

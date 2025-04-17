@@ -11,7 +11,9 @@ import IntroStep from '../components/ListingForm/IntroStep';
 import ContactStep from '../components/ListingForm/ContactStep';
 import AddressStep from '../components/ListingForm/AddressStep';
 import PropertyDetailsStep from '../components/ListingForm/PropertyDetailsStep'; // Import PropertyDetailsStep
-import PhotosMediaStep from '../components/ListingForm/PhotosMediaStep';
+import PhotosMediaStep from '../components/ListingForm/PhotosMediaStep'; // Import PhotosMediaStep
+import PropertyHighlightsStep from '../components/ListingForm/PropertyHighlightsStep'; // Import PropertyHighlightsStep
+import NeighborhoodInfoStep from '../components/ListingForm/NeighborhoodInfoStep'; // Import NeighborhoodInfoStep
 import ReviewStep from '../components/ListingForm/ReviewStep';
 import SuccessStep from '../components/ListingForm/SuccessStep'; // Assuming SuccessStep might be used generically
 
@@ -67,10 +69,15 @@ import BuyerClientPermissionsStep from '../components/BuyerSuccessForm/BuyerClie
 import BuyerClientNamePrivacyStep from '../components/BuyerSuccessForm/BuyerClientNamePrivacyStep';
 import BuyerSuccessReviewStep from '../components/BuyerSuccessForm/BuyerSuccessReviewStep';
 
+
+// Import new Open House Form components
+import OpenHouseIntroStep from '../components/OpenHouseForm/OpenHouseIntroStep';
+import OpenHouseDateStep from '../components/OpenHouseForm/OpenHouseDateStep';
+import OpenHouseReviewStep from '../components/OpenHouseForm/OpenHouseReviewStep';
+
 // ==========================================================================
 // Component Registries
 // ==========================================================================
-
 /**
  * Registry mapping component IDs (string keys) to actual Step components.
  * Add any component intended to be used as a step in ANY form type here.
@@ -80,8 +87,10 @@ export const stepComponentRegistry: StepComponentRegistry = {
   // --- Reusable Components from ListingForm ---
   ContactStep: ContactStep,
   AddressStep: AddressStep,
-  PropertyDetailsStep: PropertyDetailsStep, // Register PropertyDetailsStep
-  // PhotosMediaStep removed
+  PropertyDetailsStep: PropertyDetailsStep,
+  PhotosMediaStep: PhotosMediaStep as any, // Register PhotosMediaStep (Cast to any due to specific props)
+  PropertyHighlightsStep: PropertyHighlightsStep, // Register PropertyHighlightsStep
+  NeighborhoodInfoStep: NeighborhoodInfoStep, // Register NeighborhoodInfoStep
 
   // --- New Giveaway Form Components ---
   GiveawayDetailsStep: GiveawayDetailsStep,
@@ -90,7 +99,7 @@ export const stepComponentRegistry: StepComponentRegistry = {
   GiveawayPromoMethodStep: GiveawayPromoMethodStep,
   GiveawayPaidTypeStep: GiveawayPaidTypeStep,
   GiveawayPaidDetailsStep: GiveawayPaidDetailsStep,
-  GiveawayPhotoStep: GiveawayPhotoStep,
+  GiveawayPhotoStep: GiveawayPhotoStep as any, // Cast to any due to specific props
 
   // --- Potentially Reusable / Base Components ---
   // Add other steps from ListingForm here if they become reusable later
@@ -101,7 +110,7 @@ export const stepComponentRegistry: StepComponentRegistry = {
 
   // --- New Video Edit Request Form Components ---
   // VideoDetailsStep: VideoDetailsStep, // Removed old step
-  VideoUploadStep: VideoUploadStep, // Register the new upload step
+  VideoUploadStep: VideoUploadStep as any, // Register the new upload step (Cast to any due to specific props)
   VideoTypeStep: VideoTypeStep,
   EditTypeStep: EditTypeStep,
   EditNotesStep: EditNotesStep,
@@ -136,6 +145,9 @@ export const stepComponentRegistry: StepComponentRegistry = {
   BuyerBonusItemsStep: BuyerBonusItemsStep,
   BuyerClientPermissionsStep: BuyerClientPermissionsStep,
   BuyerClientNamePrivacyStep: BuyerClientNamePrivacyStep,
+
+  // --- New Open House Form Components ---
+  OpenHouseDateStep: OpenHouseDateStep, // Register OpenHouseDateStep
 };
 
 /**
@@ -150,6 +162,7 @@ export const introComponentRegistry: IntroComponentRegistry = {
   VideoEditIntroStep: VideoEditIntroStep, // Specific intro for Video Edit form
   SellerSuccessIntroStep: SellerSuccessIntroStep, // Specific intro for Seller Success form
   BuyerSuccessIntroStep: BuyerSuccessIntroStep,   // Specific intro for Buyer Success form
+  OpenHouseIntroStep: OpenHouseIntroStep,     // Specific intro for Open House form
 };
 
 /**
@@ -164,6 +177,7 @@ export const reviewComponentRegistry: ReviewComponentRegistry = {
   VideoEditReviewStep: VideoEditReviewStep, // Specific review step for Video Edit
   SellerSuccessReviewStep: SellerSuccessReviewStep, // Specific review step for Seller Success
   BuyerSuccessReviewStep: BuyerSuccessReviewStep,   // Specific review step for Buyer Success
+  OpenHouseReviewStep: OpenHouseReviewStep,     // Specific review step for Open House form
 };
 
 /**

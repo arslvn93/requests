@@ -27,27 +27,47 @@ interface PropertyDetailsStepProps {
 const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChange, onNext, onValidationChange }) => { // Destructure new prop
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
+  // Ensure value is initialized if potentially undefined/null from parent
+  const currentDetails = value || { propertyType: '', squareFootage: '', bedrooms: '', bathrooms: '', price: '', showPrice: '' };
+
   const updateField = (field: keyof PropertyDetailsInfo, newValue: string) => {
-    onChange({ ...value, [field]: newValue });
+    onChange({ ...currentDetails, [field]: newValue });
   };
 
   const isValid = () => {
-    // Ensure the function always returns a boolean using double negation !!()
-    return !!(
-      value.propertyType.trim().length > 0 &&
-      (value.propertyType !== 'other' || (value.otherType && value.otherType.trim().length > 0)) &&
-      (value.propertyType !== 'condo' || value.hasDen !== undefined) &&
-      ((value.propertyType !== 'freehold' && value.propertyType !== 'townhouse' && value.propertyType !== 'other') ||
-        (value.hasBasement !== undefined &&
-          (value.hasBasement === 'no' ||
-            (value.basementType &&
-             value.basementBedrooms !== undefined &&
-             value.basementBathrooms !== undefined &&
-             value.hasBasementEntrance !== undefined)))) &&
-      value.squareFootage.trim().length > 0 &&
-      value.bedrooms.trim().length > 0 &&
-      value.bathrooms.trim().length > 0
+    // Basic required fields
+    const basicValid = !!(
+      currentDetails.propertyType?.trim().length > 0 &&
+      (currentDetails.propertyType !== 'other' || (currentDetails.otherType && currentDetails.otherType.trim().length > 0)) &&
+      currentDetails.squareFootage?.trim().length > 0 &&
+      currentDetails.bedrooms?.trim().length > 0 &&
+      currentDetails.bathrooms?.trim().length > 0
     );
+
+    if (!basicValid) return false;
+
+    // Conditional validation for Condo
+    if (currentDetails.propertyType === 'condo' && currentDetails.hasDen === undefined) {
+      return false;
+    }
+
+    // Conditional validation for Basement (only if hasBasement is 'yes')
+    const requiresBasementCheck = ['freehold', 'townhouse', 'other'].includes(currentDetails.propertyType);
+    if (requiresBasementCheck) {
+        if (currentDetails.hasBasement === undefined) return false; // Must answer yes/no
+        if (currentDetails.hasBasement === 'yes') {
+            // If yes, check that all sub-fields are defined/selected
+            if (!currentDetails.basementType ||
+                currentDetails.basementBedrooms === undefined ||
+                currentDetails.basementBathrooms === undefined ||
+                currentDetails.hasBasementEntrance === undefined) {
+                return false;
+            }
+        }
+        // If 'no', it's valid regarding basement
+    }
+
+    return true; // All checks passed
   };
 
   // Effect to notify parent component (ListingForm) about validation status changes
@@ -125,7 +145,7 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
               type="text"
               id="otherType"
               name="otherType"
-              value={value.otherType}
+              value={currentDetails.otherType || ''} // Use currentDetails
               onChange={(e) => updateField('otherType', e.target.value)}
               onFocus={() => setFocusedField('otherType')}
               onBlur={() => setFocusedField(null)}
@@ -144,7 +164,7 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
                 type="button"
                 onClick={() => updateField('hasDen', 'yes')}
                 className={`flex-1 p-3 rounded-xl text-center transition-all duration-200
-                  ${value.hasDen === 'yes'
+                  ${currentDetails.hasDen === 'yes' // Use currentDetails
                     ? 'bg-blue-500 text-white'
                     : 'glass-card text-white/90 hover:border-blue-400'}`}
               >
@@ -154,7 +174,7 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
                 type="button"
                 onClick={() => updateField('hasDen', 'no')}
                 className={`flex-1 p-3 rounded-xl text-center transition-all duration-200
-                  ${value.hasDen === 'no'
+                  ${currentDetails.hasDen === 'no' // Use currentDetails
                     ? 'bg-blue-500 text-white'
                     : 'glass-card text-white/90 hover:border-blue-400'}`}
               >
@@ -174,7 +194,7 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
                   type="button"
                   onClick={() => updateField('hasBasement', 'yes')}
                   className={`flex-1 p-3 rounded-xl text-center transition-all duration-200
-                    ${value.hasBasement === 'yes'
+                    ${currentDetails.hasBasement === 'yes' // Use currentDetails
                       ? 'bg-blue-500 text-white'
                       : 'glass-card text-white/90 hover:border-blue-400'}`}
                 >
@@ -184,7 +204,7 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
                   type="button"
                   onClick={() => updateField('hasBasement', 'no')}
                   className={`flex-1 p-3 rounded-xl text-center transition-all duration-200
-                    ${value.hasBasement === 'no'
+                    ${currentDetails.hasBasement === 'no' // Use currentDetails
                       ? 'bg-blue-500 text-white'
                       : 'glass-card text-white/90 hover:border-blue-400'}`}
                 >
@@ -193,7 +213,8 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
               </div>
             </div>
 
-            {value.hasBasement === 'yes' && (
+            {/* Use optional chaining ?. for safe access */}
+            {currentDetails.hasBasement === 'yes' && (
               <>
                 <div className="space-y-3">
                   <p className="text-white/90">What type of basement is it?</p>
@@ -204,7 +225,7 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
                         type="button"
                         onClick={() => updateField('basementType', type)}
                         className={`flex-1 p-3 rounded-xl text-center transition-all duration-200
-                          ${value.basementType === type
+                          ${currentDetails.basementType === type // Use currentDetails
                             ? 'bg-blue-500 text-white'
                             : 'glass-card text-white/90 hover:border-blue-400'}`}
                       >
@@ -225,7 +246,7 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
                         type="button"
                         onClick={() => updateField('basementBedrooms', number.toString())}
                         className={`relative w-12 h-12 rounded-full flex flex-col items-center justify-center transition-all duration-200
-                          ${value.basementBedrooms === number.toString()
+                          ${currentDetails.basementBedrooms === number.toString() // Use currentDetails
                             ? 'bg-blue-500 text-white border-2 border-blue-400'
                             : 'glass-card hover:border-blue-400'}`}
                       >
@@ -247,7 +268,7 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
                         type="button"
                         onClick={() => updateField('basementBathrooms', number)}
                         className={`relative w-12 h-12 rounded-full flex flex-col items-center justify-center transition-all duration-200
-                          ${value.basementBathrooms === number
+                          ${currentDetails.basementBathrooms === number // Use currentDetails
                             ? 'bg-blue-500 text-white border-2 border-blue-400'
                             : 'glass-card hover:border-blue-400'}`}
                       >
@@ -265,7 +286,7 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
                       type="button"
                       onClick={() => updateField('hasBasementEntrance', 'yes')}
                       className={`flex-1 p-3 rounded-xl text-center transition-all duration-200
-                        ${value.hasBasementEntrance === 'yes'
+                        ${currentDetails.hasBasementEntrance === 'yes' // Use currentDetails
                           ? 'bg-blue-500 text-white'
                           : 'glass-card text-white/90 hover:border-blue-400'}`}
                     >
@@ -275,7 +296,7 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
                       type="button"
                       onClick={() => updateField('hasBasementEntrance', 'no')}
                       className={`flex-1 p-3 rounded-xl text-center transition-all duration-200
-                        ${value.hasBasementEntrance === 'no'
+                        ${currentDetails.hasBasementEntrance === 'no' // Use currentDetails
                           ? 'bg-blue-500 text-white'
                           : 'glass-card text-white/90 hover:border-blue-400'}`}
                     >
@@ -299,7 +320,7 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
                 type="button"
                 onClick={() => updateField('bedrooms', number.toString())}
                 className={`relative w-12 h-12 rounded-full flex flex-col items-center justify-center transition-all duration-200
-                  ${value.bedrooms === number.toString()
+                  ${currentDetails.bedrooms === number.toString() // Use currentDetails
                     ? 'bg-blue-500 text-white border-2 border-blue-400'
                     : 'glass-card hover:border-blue-400'
                   }`}
@@ -322,7 +343,7 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
                 type="button"
                 onClick={() => updateField('bathrooms', number)}
                 className={`relative w-12 h-12 rounded-full flex flex-col items-center justify-center transition-all duration-200
-                  ${value.bathrooms === number
+                  ${currentDetails.bathrooms === number // Use currentDetails
                     ? 'bg-blue-500 text-white border-2 border-blue-400'
                     : 'glass-card hover:border-blue-400'
                   }`}
@@ -347,7 +368,7 @@ const PropertyDetailsStep: React.FC<PropertyDetailsStepProps> = ({ value, onChan
             name="squareFootage"
             inputMode="numeric" // Better for mobile keyboards
             pattern="[0-9]*" // Helps with validation
-            value={value.squareFootage}
+            value={currentDetails.squareFootage || ''} // Use currentDetails
             onChange={(e) => updateField('squareFootage', e.target.value.replace(/\D/g, ''))}
             onFocus={() => setFocusedField('squareFootage')}
             onBlur={() => setFocusedField(null)}

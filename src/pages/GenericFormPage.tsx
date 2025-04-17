@@ -203,15 +203,14 @@ const GenericFormPage: React.FC<GenericFormPageProps> = ({ formTypeId }) => {
    const handleReset = useCallback(() => {
     if (config) {
         setFormData(config.initialData);
-        setCurrentStep(0);
+        setCurrentStep(0); // Go back to the first step (intro or step 1)
         setSubmissionStatus('idle');
         setSubmissionMessage('');
         setIsSubmitting(false);
-        setIsCurrentStepValid(!config.introComponentId); // Reset validation
-        // Optionally navigate home or to a dashboard
-        navigate('/');
+        setIsCurrentStepValid(!config.introComponentId); // Reset validation for the first step
+        // Removed navigate('/') to restart the current form instead of going home
     }
-  }, [config, navigate]);
+  }, [config]); // Removed navigate from dependencies
 
   // --- Rendering Logic ---
 
@@ -227,9 +226,14 @@ const GenericFormPage: React.FC<GenericFormPageProps> = ({ formTypeId }) => {
   let CurrentStepComponent: React.ComponentType<any> | null = null;
   let stepProps: any = {}; // Props to pass to the step component
 
+  // Define all boolean flags first
   const isIntroStep = !!(currentStep === 0 && config?.introComponentId);
   const isReviewStep = !!(config?.reviewComponentId && currentStep === totalConfiguredSteps + 1);
   const isStandardStep = currentStep > 0 && currentStep <= totalConfiguredSteps;
+
+  // --- Debugging Log ---
+  console.log(`[GenericFormPage] Rendering Step Calculation: currentStep=${currentStep}, totalConfiguredSteps=${totalConfiguredSteps}, isIntroStep=${isIntroStep}, isReviewStep=${isReviewStep}, isStandardStep=${isStandardStep}`);
+  // --- End Debugging Log ---
 
   if (isIntroStep) {
       CurrentStepComponent = introComponentRegistry[config.introComponentId!];
@@ -242,7 +246,8 @@ const GenericFormPage: React.FC<GenericFormPageProps> = ({ formTypeId }) => {
           isSubmitting: isSubmitting,
           submissionStatus: submissionStatus,
           submissionMessage: submissionMessage,
-          // Add any other props the review component expects
+          onValidationChange: setIsCurrentStepValid, // Pass validation callback
+          onEdit: setCurrentStep, // Pass function to jump to a step index
       };
   } else if (isStandardStep) {
       const stepConfig = config.steps[currentStep - 1]; // Adjust index for 0-based array

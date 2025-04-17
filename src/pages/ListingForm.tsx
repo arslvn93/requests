@@ -35,12 +35,12 @@ export interface FormData { // Export if needed by other components directly
     phone: string;
     email: string;
   };
-  address: {
-    address: string;
-    address2: string;
+  address: { // Use the consistent structure
+    street: string;
+    address2?: string; // Keep optional
     city: string;
-    state: string;
-    zipCode: string;
+    province: string; // Changed from state
+    postalCode: string; // Changed from zipCode
     country: string;
   };
   adDetails: {
@@ -104,7 +104,8 @@ export interface FormData { // Export if needed by other components directly
 const initialFormData: FormData = {
   listingId: null,
   contact: { firstName: '', lastName: '', phone: '', email: '' },
-  address: { address: '', address2: '', city: '', state: '', zipCode: '', country: 'Canada' },
+  // Update initial state to match new address structure
+  address: { street: '', address2: '', city: '', province: '', postalCode: '', country: 'Canada' },
   propertyDetails: {
     propertyType: '', otherType: '', hasDen: undefined, hasBasement: undefined,
     basementType: undefined, basementBedrooms: undefined, basementBathrooms: undefined,
@@ -151,12 +152,12 @@ const ListingForm: React.FC = () => {
       last_name: data.contact.lastName,
       email: data.contact.email,
       phone: data.contact.phone,
-      // Address
-      address_line_1: data.address.address,
+      // Address (Map from new structure)
+      address_line_1: data.address.street, // Use street
       address_line_2: data.address.address2 || null,
       city: data.address.city,
-      state_province_region: data.address.state,
-      zip_postal_code: data.address.zipCode,
+      state_province_region: data.address.province, // Use province
+      zip_postal_code: data.address.postalCode, // Use postalCode
       country: data.address.country,
       // Ad Details
       ad_objective: data.adDetails.objective,

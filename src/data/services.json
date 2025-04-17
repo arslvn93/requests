@@ -34,11 +34,11 @@
     },
     {
       "id": "open-house",
-      "name": "Open House Success Kit",
-      "description": "Use our checklist to plan and host an open house that leaves a lasting impression on visitors.",
-      "turnaround": "2 Business Days",
-      "icon": "CalendarCheck",
-      "url": "https://zd7oshiupbh.typeform.com/to/SPun7E3e"
+      "name": "Open House Request",
+      "description": "Request an Open House landing page and automation setup.",
+      "turnaround": "2-3 Business Days",
+      "icon": "Home",
+      "url": "/open-house"
     },
     {
       "id": "new-listing-launch",

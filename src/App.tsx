@@ -20,6 +20,8 @@ function App() {
         <Route path="/seller-success-story" element={<GenericFormPage formTypeId="seller-success-story" />} />
         {/* Add specific route for the Buyer Success Story Form */}
         <Route path="/buyer-success-story" element={<GenericFormPage formTypeId="buyer-success-story" />} />
+        {/* Add specific route for the Open House Form */}
+        <Route path="/open-house" element={<GenericFormPage formTypeId="open-house" />} /> {/* Corrected path */}
         {/* Main page displaying services */}
         <Route path="/" element={
           <div className="relative min-h-screen overflow-hidden py-6 sm:py-12 px-3 sm:px-6 lg:px-8">

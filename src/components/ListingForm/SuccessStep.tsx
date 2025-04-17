@@ -55,7 +55,7 @@ const SuccessStep: React.FC<SuccessStepProps> = ({ submissionMessage, onReset })
                      flex items-center justify-center gap-2"
         >
           <RotateCcw className="w-5 h-5" />
-          Submit Another Listing
+          Submit Another Request
         </button>
       </div>
     </div>

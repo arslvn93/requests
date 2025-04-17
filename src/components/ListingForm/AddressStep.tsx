@@ -1,36 +1,42 @@
 import React, { useState, useEffect } from 'react'; // Import useEffect
 import { MapPin, Building2 } from 'lucide-react';
 
-interface AddressInfo {
-  address: string;
-  address2: string;
+// Updated interface to match common form data structure
+interface AddressData {
+  street: string;
+  address2?: string; // Make optional
   city: string;
-  state: string;
-  zipCode: string;
+  province: string; // Changed from state
+  postalCode: string; // Changed from zipCode
   country: string;
 }
 
 interface AddressStepProps {
-  value: AddressInfo;
-  onChange: (value: AddressInfo) => void;
+  value: AddressData; // Use updated interface
+  onChange: (value: AddressData) => void; // Use updated interface
   onNext: () => void;
-  onValidationChange: (isValid: boolean) => void; // Add prop for validation status
+  onValidationChange: (isValid: boolean) => void;
 }
 
-const AddressStep: React.FC<AddressStepProps> = ({ value, onChange, onNext, onValidationChange }) => { // Destructure new prop
+const AddressStep: React.FC<AddressStepProps> = ({ value, onChange, onNext, onValidationChange }) => {
   const [focusedField, setFocusedField] = useState<string | null>(null);
 
-  const updateField = (field: keyof AddressInfo, newValue: string) => {
-    onChange({ ...value, [field]: newValue });
+  // Ensure value is initialized if potentially undefined/null from parent
+  const currentAddress = value || { street: '', address2: '', city: '', province: '', postalCode: '', country: 'Canada' };
+
+
+  const updateField = (field: keyof AddressData, newValue: string) => {
+    onChange({ ...currentAddress, [field]: newValue });
   };
 
   const isValid = () => {
+    // Check required fields based on the updated interface
     return (
-      value.address.trim().length > 0 &&
-      value.city.trim().length > 0 &&
-      value.state.trim().length > 0 &&
-      value.zipCode.trim().length > 0 &&
-      value.country.trim().length > 0
+      currentAddress.street?.trim().length > 0 &&
+      currentAddress.city?.trim().length > 0 &&
+      currentAddress.province?.trim().length > 0 &&
+      currentAddress.postalCode?.trim().length > 0 &&
+      currentAddress.country?.trim().length > 0
     );
   };
 
@@ -63,11 +69,11 @@ const AddressStep: React.FC<AddressStepProps> = ({ value, onChange, onNext, onVa
           <MapPin className="w-6 h-6 text-blue-400" />
           <input
             type="text"
-            id="address"
-            name="address"
-            value={value.address}
-            onChange={(e) => updateField('address', e.target.value)}
-            onFocus={() => setFocusedField('address')}
+            id="street" // Changed id/name
+            name="street" // Changed id/name
+            value={currentAddress.street || ''} // Use updated field name
+            onChange={(e) => updateField('street', e.target.value)} // Use updated field name
+            onFocus={() => setFocusedField('street')} // Use updated field name
             onBlur={() => setFocusedField(null)}
             placeholder="Street Address"
             className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
@@ -86,8 +92,8 @@ const AddressStep: React.FC<AddressStepProps> = ({ value, onChange, onNext, onVa
             type="text"
             id="address2"
             name="address2"
-            value={value.address2}
-            onChange={(e) => updateField('address2', e.target.value)}
+            value={currentAddress.address2 || ''} // Use updated field name (optional)
+            onChange={(e) => updateField('address2', e.target.value)} // Use updated field name
             onFocus={() => setFocusedField('address2')}
             onBlur={() => setFocusedField(null)}
             placeholder="Apartment, suite, unit, etc. (optional)"
@@ -106,7 +112,7 @@ const AddressStep: React.FC<AddressStepProps> = ({ value, onChange, onNext, onVa
               type="text"
               id="city"
               name="city"
-              value={value.city}
+              value={currentAddress.city || ''} // Use updated field name
               onChange={(e) => updateField('city', e.target.value)}
               onFocus={() => setFocusedField('city')}
               onBlur={() => setFocusedField(null)}
@@ -120,13 +126,13 @@ const AddressStep: React.FC<AddressStepProps> = ({ value, onChange, onNext, onVa
               ${focusedField === 'state' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <input
               type="text"
-              id="state"
-              name="state"
-              value={value.state}
-              onChange={(e) => updateField('state', e.target.value)}
-              onFocus={() => setFocusedField('state')}
+              id="province" // Changed id/name
+              name="province" // Changed id/name
+              value={currentAddress.province || ''} // Use updated field name
+              onChange={(e) => updateField('province', e.target.value)} // Use updated field name
+              onFocus={() => setFocusedField('province')} // Use updated field name
               onBlur={() => setFocusedField(null)}
-              placeholder="State/Province"
+              placeholder="Province" // Updated placeholder
               className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
               required
             />
@@ -142,13 +148,13 @@ const AddressStep: React.FC<AddressStepProps> = ({ value, onChange, onNext, onVa
               ${focusedField === 'zipCode' ? 'border-blue-400 shadow-[0_0_30px_rgba(59,130,246,0.2)]' : ''}`}>
             <input
               type="text"
-              id="zipCode"
-              name="zipCode"
-              value={value.zipCode}
-              onChange={(e) => updateField('zipCode', e.target.value)}
-              onFocus={() => setFocusedField('zipCode')}
+              id="postalCode" // Changed id/name
+              name="postalCode" // Changed id/name
+              value={currentAddress.postalCode || ''} // Use updated field name
+              onChange={(e) => updateField('postalCode', e.target.value)} // Use updated field name
+              onFocus={() => setFocusedField('postalCode')} // Use updated field name
               onBlur={() => setFocusedField(null)}
-              placeholder="ZIP/Postal Code"
+              placeholder="Postal Code" // Updated placeholder
               className="flex-1 bg-transparent border-none outline-none text-white/90 placeholder-white/40"
               required
             />
@@ -159,7 +165,7 @@ const AddressStep: React.FC<AddressStepProps> = ({ value, onChange, onNext, onVa
             <select
               id="country"
               name="country"
-              value={value.country}
+              value={currentAddress.country || 'Canada'} // Use updated field name, default to Canada
               onChange={(e) => updateField('country', e.target.value)}
               onFocus={() => setFocusedField('country')}
               onBlur={() => setFocusedField(null)}
