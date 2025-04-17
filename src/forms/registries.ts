@@ -29,7 +29,8 @@ import GiveawayReviewStep from '../components/GiveawayForm/GiveawayReviewStep';
 
 // Import new Video Edit Request Form components
 import VideoEditIntroStep from '../components/VideoEditForm/VideoEditIntroStep';
-import VideoDetailsStep from '../components/VideoEditForm/VideoDetailsStep';
+// import VideoDetailsStep from '../components/VideoEditForm/VideoDetailsStep'; // Removed old step
+import VideoUploadStep from '../components/VideoEditForm/VideoUploadStep'; // Import the new upload step
 import VideoTypeStep from '../components/VideoEditForm/VideoTypeStep';
 import EditTypeStep from '../components/VideoEditForm/EditTypeStep';
 import EditNotesStep from '../components/VideoEditForm/EditNotesStep';
@@ -99,7 +100,8 @@ export const stepComponentRegistry: StepComponentRegistry = {
   // Example: 'GiveawayDetailsStep': GiveawayDetailsStep,
 
   // --- New Video Edit Request Form Components ---
-  VideoDetailsStep: VideoDetailsStep,
+  // VideoDetailsStep: VideoDetailsStep, // Removed old step
+  VideoUploadStep: VideoUploadStep, // Register the new upload step
   VideoTypeStep: VideoTypeStep,
   EditTypeStep: EditTypeStep,
   EditNotesStep: EditNotesStep,

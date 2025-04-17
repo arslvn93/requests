@@ -244,8 +244,8 @@ const ListingForm: React.FC = () => {
 
       if (response.ok) {
         setSubmissionStatus('success');
-        // Simplified success message
-        setSubmissionMessage('Listing submitted successfully!');
+        // Restore detailed success message specific to Listing Ads
+        setSubmissionMessage(`Thank you for submitting your listing details! 🎯\n\nWhat happens next?\n- Our team will review your submission and start crafting your ads.\n- Within 72 hours, you’ll receive your ad preview via Slack for approval.\n- Once approved, your ads will launch at 6:00 AM the next business day.`);
         // console.log('Submission successful!'); // Removed log
       } else {
         const errorData = await response.text();

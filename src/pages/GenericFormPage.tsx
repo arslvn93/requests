@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Loader2, Check } from 'lucide-react'; // Import icons for submit button
+import { v4 as uuidv4 } from 'uuid'; // Import uuid
 
 import { FormTypeConfig, StepProps } from '../forms/form-types';
 import { getFormConfig } from '../forms/configLoader'; // Import the real loader
@@ -32,6 +33,7 @@ const GenericFormPage: React.FC<GenericFormPageProps> = ({ formTypeId }) => {
   const [currentStep, setCurrentStep] = useState<number>(0); // 0 = Intro/First Step
   const [formData, setFormData] = useState<any>({}); // Generic state
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formInstanceId, setFormInstanceId] = useState<string | null>(null); // Unique ID for this form session
   const [submissionStatus, setSubmissionStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [submissionMessage, setSubmissionMessage] = useState('');
   const [isCurrentStepValid, setIsCurrentStepValid] = useState(false); // Validity of the current step's inputs
@@ -53,6 +55,7 @@ const GenericFormPage: React.FC<GenericFormPageProps> = ({ formTypeId }) => {
       setConfig(loadedConfig);
       setFormData(loadedConfig.initialData);
       setCurrentStep(0); // Reset to first step
+      setFormInstanceId(uuidv4()); // Generate unique ID for this form instance
       setSubmissionStatus('idle');
       setIsSubmitting(false);
       // Initial validation state depends on whether step 0/intro needs validation
@@ -254,6 +257,23 @@ const GenericFormPage: React.FC<GenericFormPageProps> = ({ formTypeId }) => {
               formTypeId: formTypeId,
               stepId: stepConfig.stepId,
           } as StepProps<any, any>;
+
+          // --- Add specific props for components needing the form instance ID ---
+          if (stepConfig.componentId === 'GiveawayPhotoStep') {
+              stepProps.giveawayId = formInstanceId;
+              stepProps.onGiveawayIdChange = setFormInstanceId; // Pass setter function
+          }
+          // Add similar check for ListingForm's PhotosMediaStep if it's registered and used
+          else if (stepConfig.componentId === 'PhotosMediaStep') { // Assuming 'PhotosMediaStep' is the ID used in registry
+              stepProps.listingId = formInstanceId;
+              stepProps.onListingIdChange = setFormInstanceId; // Pass setter function
+          }
+          else if (stepConfig.componentId === 'VideoUploadStep') {
+              stepProps.videoEditRequestId = formInstanceId;
+              stepProps.onVideoEditRequestIdChange = setFormInstanceId;
+          }
+          // --- End specific props ---
+
       } else {
           console.error(`Component not found in registry for stepId: ${stepConfig?.stepId}, componentId: ${stepConfig?.componentId}`);
           // Render error state
@@ -305,33 +325,8 @@ const GenericFormPage: React.FC<GenericFormPageProps> = ({ formTypeId }) => {
               <div className="text-red-500">Error: Could not render step {currentStep}. Component not found or configuration error.</div>
             )}
 
-            {/* Desktop Submit Button (Only on Review Step) */}
-            {isReviewStep && (
-              <button
-                onClick={handleSubmit}
-                disabled={isSubmitting}
-                className={`w-full mt-8 py-4 px-6 rounded-xl transition-all duration-200
-                           flex items-center justify-center gap-2 font-medium
-                           ${isSubmitting
-                             ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                             : 'bg-blue-500/90 hover:bg-blue-500 text-white hover:shadow-[0_0_30px_rgba(59,130,246,0.3)]'
-                           }
-                           hidden md:flex`} // Hide on mobile, show on desktop (flex)
-              >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    Submitting...
-                  </>
-                ) : (
-                  <>
-                    <Check className="w-5 h-5" />
-                    {/* TODO: Consider making button text dynamic based on form config? */}
-                    Submit Form
-                  </>
-                )}
-              </button>
-            )}
+            {/* Desktop Submit Button (Only on Review Step) - REMOVED */}
+            {/* This button is now expected to be rendered within the specific ReviewStep component itself */}
           </div>
 
           {/* Mobile Navigation */}

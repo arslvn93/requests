@@ -37,7 +37,7 @@ const VideoEditReviewStep: React.FC<VideoEditReviewStepProps> = ({
   // Destructure for easier access, provide defaults
   const {
     contact = { firstName: '', lastName: '', phone: '', email: '' },
-    videoDetails = { originalTitle: '', driveLink: '' },
+    videoUpload = null, // Use the new videoUpload field
     videoType = { selectedType: '', otherType: '' },
     editTypes = { selectedEdits: [], otherEdit: '' },
     additionalNotes = '',
@@ -71,11 +71,12 @@ const VideoEditReviewStep: React.FC<VideoEditReviewStepProps> = ({
           <p><strong>Phone:</strong> {contact.phone || 'N/A'}</p>
         </div>
 
-        {/* Video Details */}
+        {/* Video Details - Updated to show uploaded filename */}
         <div className="glass-card p-4 rounded-lg">
-          <h3 className="text-lg font-semibold mb-2 text-blue-300 border-b border-white/10 pb-1">Video Details</h3>
-          <p><strong>Original Title:</strong> {videoDetails.originalTitle || 'N/A'}</p>
-          <p><strong>Drive Link:</strong> <a href={videoDetails.driveLink} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline break-all">{videoDetails.driveLink || 'N/A'}</a></p>
+          <h3 className="text-lg font-semibold mb-2 text-blue-300 border-b border-white/10 pb-1">Video File</h3>
+          <p><strong>Uploaded File:</strong> {videoUpload?.originalFilename || 'N/A'}</p>
+          {/* Optionally display the S3 URL, but maybe keep it internal */}
+          {/* <p><strong>S3 URL:</strong> <a href={videoUpload?.s3Url} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline break-all">{videoUpload?.s3Url || 'N/A'}</a></p> */}
         </div>
 
         {/* Video Type */}

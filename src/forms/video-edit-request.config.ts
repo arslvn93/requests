@@ -3,6 +3,15 @@ import { FormTypeConfig } from './form-types';
 // ==========================================================================
 // Data Structure for Video Edit Request Form
 // ==========================================================================
+
+// Define the structure for storing uploaded video information
+export interface VideoUploadInfo {
+  id: string;       // Unique identifier for the video instance
+  s3Key: string;    // The key (path) in the S3 bucket
+  s3Url: string;    // The public URL of the uploaded video
+  originalFilename: string; // The original name of the uploaded file
+}
+
 export interface VideoEditRequestFormData {
   // From Step 1: Contact Info
   contact: {
@@ -11,11 +20,8 @@ export interface VideoEditRequestFormData {
     phone: string;
     email: string;
   };
-  // From Step 2: Video Details
-  videoDetails: {
-    originalTitle: string;
-    driveLink: string;
-  };
+  // Step 2: Video Upload (Replaces Video Details)
+  videoUpload?: VideoUploadInfo | null;
   // From Step 3: Video Type
   videoType: {
     selectedType: string; // Value from options list or 'Other'
@@ -42,7 +48,7 @@ export interface VideoEditRequestFormData {
 // ==========================================================================
 const initialVideoEditData: VideoEditRequestFormData = {
   contact: { firstName: '', lastName: '', phone: '', email: '' },
-  videoDetails: { originalTitle: '', driveLink: '' },
+  videoUpload: null, // Initialize new field
   videoType: { selectedType: '', otherType: '' },
   editTypes: { selectedEdits: [], otherEdit: '' },
   additionalNotes: '',
@@ -62,8 +68,8 @@ export const videoEditRequestFormConfig: FormTypeConfig<VideoEditRequestFormData
   steps: [
     // Step 1: Contact (Reuse)
     { stepId: 'contact', componentId: 'ContactStep', title: 'Contact Info', dataKey: 'contact', icon: 'User' },
-    // Step 2: Video Details (New)
-    { stepId: 'videoDetails', componentId: 'VideoDetailsStep', title: 'Video Details', dataKey: 'videoDetails', icon: 'FileVideo' },
+    // Step 2: Video Upload (Replaces Video Details)
+    { stepId: 'videoUpload', componentId: 'VideoUploadStep', title: 'Upload Video', dataKey: 'videoUpload', icon: 'UploadCloud' }, // New Step
     // Step 3: Video Type (New)
     { stepId: 'videoType', componentId: 'VideoTypeStep', title: 'Video Type', dataKey: 'videoType', icon: 'Film' },
     // Step 4: Edit Types (New)
@@ -82,8 +88,9 @@ export const videoEditRequestFormConfig: FormTypeConfig<VideoEditRequestFormData
       contact_email: data.contact.email,
       contact_name: `${data.contact.firstName} ${data.contact.lastName}`,
       contact_phone: data.contact.phone, // Added phone
-      video_title: data.videoDetails.originalTitle,
-      video_link: data.videoDetails.driveLink,
+      // Send S3 URL and original filename instead of title/link
+      video_s3_url: data.videoUpload?.s3Url || null,
+      video_original_filename: data.videoUpload?.originalFilename || null,
       video_type: data.videoType.selectedType === 'Other' ? data.videoType.otherType : data.videoType.selectedType,
       edit_types: data.editTypes.selectedEdits.includes('other')
         ? [...data.editTypes.selectedEdits.filter(e => e !== 'other'), data.editTypes.otherEdit].join(', ')

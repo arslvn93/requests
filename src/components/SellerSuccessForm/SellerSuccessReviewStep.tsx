@@ -2,14 +2,16 @@ import React from 'react';
 import { SellerSuccessStoryData } from '../../forms/seller-success-story.config';
 import {
   ClipboardList, User, MapPin, Home, TrendingUp, Link as LinkIcon, Database,
-  Users as UsersIcon, Target, Award, Heart, Lightbulb, Gift, CheckSquare, EyeOff
+  Users as UsersIcon, Target, Award, Heart, Lightbulb, Gift, CheckSquare, EyeOff,
+  Loader2 // Add Loader2 import
 } from 'lucide-react';
 
 // Define props expected by Review steps (as passed by GenericFormPage)
 interface ReviewStepProps {
   formData: SellerSuccessStoryData;
   onEdit: (stepId: string) => void; // Function to navigate back to a specific step for editing
-  // Props related to submission status (passed but not used directly for rendering button here)
+  // Props related to submission status
+  onSubmit: () => void; // Add onSubmit prop
   isSubmitting?: boolean;
   submissionStatus?: 'idle' | 'success' | 'error';
   submissionMessage?: string;
@@ -57,7 +59,14 @@ const formatYesNo = (value?: string) => {
 };
 
 
-const SellerSuccessReviewStep: React.FC<ReviewStepProps> = ({ formData, onEdit }) => {
+const SellerSuccessReviewStep: React.FC<ReviewStepProps> = ({
+  formData,
+  onEdit,
+  onSubmit, // Add onSubmit
+  isSubmitting, // Add isSubmitting
+  submissionStatus, // Add submissionStatus
+  submissionMessage // Add submissionMessage
+}) => {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
@@ -193,10 +202,26 @@ const SellerSuccessReviewStep: React.FC<ReviewStepProps> = ({ formData, onEdit }
       </Section>
 
 
-      {/* Submission button is handled by GenericFormPage */}
-       <p className="text-center text-sm text-white/60 pt-4">
-         Ready to submit? Click the "Submit Case Study" button below.
-       </p>
+      {/* Submission Button */}
+      <button
+        onClick={onSubmit}
+        disabled={isSubmitting}
+        className="w-full mt-8 py-3 px-6 bg-green-600/90 hover:bg-green-600 text-white font-medium rounded-xl transition-all duration-200 hover:shadow-[0_0_30px_rgba(34,197,94,0.3)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+      >
+        {isSubmitting ? (
+          <>
+            <Loader2 className="w-5 h-5 animate-spin" />
+            Submitting...
+          </>
+        ) : (
+          'Confirm & Submit Case Study' // Adjusted text
+        )}
+      </button>
+
+      {/* Display submission errors here */}
+      {submissionStatus === 'error' && (
+        <p className="text-red-400 text-center mt-4">{submissionMessage}</p>
+      )}
     </div>
   );
 };

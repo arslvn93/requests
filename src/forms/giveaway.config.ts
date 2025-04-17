@@ -3,6 +3,14 @@ import { FormTypeConfig } from './form-types';
 // ==========================================================================
 // Data Structure for Giveaway Form
 // ==========================================================================
+
+// Define the structure for storing uploaded photo information
+export interface GiveawayPhotoInfo {
+  id: string;       // Unique identifier for the photo instance
+  s3Key: string;    // The key (path) in the S3 bucket
+  s3Url: string;    // The public URL of the uploaded photo
+}
+
 export interface GiveawayFormData {
   // Step 1: Contact Info
   contact: {
@@ -38,9 +46,7 @@ export interface GiveawayFormData {
       paidCampaignEndDate?: string;     // Q12 (Date input YYYY-MM-DD)
   };
   // Step 8: Theme Photo
-  themePhoto?: File | null;         // Q13 (File object for simple upload)
-  // Optional: Store uploaded URL if implementing upload within the step
-  // themePhotoUrl?: string;
+  themePhoto?: GiveawayPhotoInfo | null; // Stores S3 upload info
 }
 
 // ==========================================================================
@@ -174,8 +180,8 @@ export const giveawayFormConfig: FormTypeConfig<GiveawayFormData> = {
       target_audience: data.giveawayAudience.targetAudience,
       // Promotion
       promo_methods: data.promotionMethods?.join(','), // Join array into comma-separated string
-      // Photo (handle file - sending filename for now)
-      theme_photo_filename: data.themePhoto?.name || null,
+      // Photo (send S3 URL)
+      theme_photo_url: data.themePhoto?.s3Url || null,
     };
 
     // Conditionally include paid ad details only if 'D' was selected

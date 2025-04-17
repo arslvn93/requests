@@ -42,22 +42,9 @@ const SuccessStep: React.FC<SuccessStepProps> = ({ submissionMessage, onReset })
         <h2 className="text-3xl font-bold text-white/90 mb-6 text-center">✅ Submission Complete – We’re On It!</h2>
 
         <div className="text-white/80 mb-8 w-full text-left space-y-4 text-base">
-          <p className="text-center">Thank you for submitting your listing details! 🎯</p>
-          <p className="font-semibold text-lg text-white/90">What happens next?</p>
-          <ul className="list-none space-y-3 pl-2">
-            <li className="flex items-start gap-3">
-              <span className="mt-1 text-xl">📩</span>
-              <span>Our team will review your submission and start crafting your ads.</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="mt-1 text-xl">📩</span>
-              <span>Within 72 hours, you’ll receive your ad preview via Slack for approval.</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="mt-1 text-xl">📩</span>
-              <span>Once approved, your ads will launch at 6:00 AM the next business day.</span>
-            </li>
-          </ul>
+          {/* Display the dynamic submission message passed via props */}
+          {/* Added whitespace-pre-wrap to respect newlines from the config */}
+          <p className="whitespace-pre-wrap">{submissionMessage}</p>
         </div>
 
         <button
