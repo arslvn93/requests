@@ -25,6 +25,14 @@
       "url": "/video-edit-request"
     },
     {
+      "id": "open-house",
+      "name": "Open House Request",
+      "description": "Request an Open House landing page and automation setup.",
+      "turnaround": "2-3 Business Days",
+      "icon": "Home",
+      "url": "/open-house"
+    },
+    {
       "id": "seller-success-story",
       "name": "Seller Success Story",
       "description": "We'll create a detailed case study highlighting your achievements and lessons learned.",
@@ -33,12 +41,12 @@
       "url": "/seller-success-story"
     },
     {
-      "id": "open-house",
-      "name": "Open House Request",
-      "description": "Request an Open House landing page and automation setup.",
-      "turnaround": "2-3 Business Days",
-      "icon": "Home",
-      "url": "/open-house"
+      "id": "buyer-success-story",
+      "name": "Buyer Success Story",
+      "description": "Share your buyer's journey and success to attract more potential clients.",
+      "turnaround": "3-4 Business Days",
+      "icon": "Users",
+      "url": "/buyer-success-story"
     },
     {
       "id": "new-listing-launch",
@@ -49,14 +57,7 @@
       "url": "#",
       "comingSoon": true
     },
-    {
-      "id": "buyer-success-story",
-      "name": "Buyer Success Story",
-      "description": "Share your buyer's journey and success to attract more potential clients.",
-      "turnaround": "3-4 Business Days",
-      "icon": "Users",
-      "url": "/buyer-success-story"
-    },
+ 
     {
       "id": "buyer-intake-form",
       "name": "Buyer Intake Form",
