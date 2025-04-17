@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { Loader2, Check } from 'lucide-react'; // Import icons for submit button
 
-// Assuming a function to get config exists - we'll create this later
-// import { getFormConfig } from '../forms/config-loader'; // Placeholder
 import { FormTypeConfig, StepProps } from '../forms/form-types';
+import { getFormConfig } from '../forms/configLoader'; // Import the real loader
 import {
   stepComponentRegistry,
   introComponentRegistry,
@@ -18,23 +18,14 @@ import MobileFormNavigation from '../components/ListingForm/MobileFormNavigation
 // Assuming a generic SuccessStep exists or we use the one from ListingForm
 import SuccessStep from '../components/ListingForm/SuccessStep';
 
-// Placeholder type for the config loader function
-type GetFormConfigFunction = (formTypeId: string) => FormTypeConfig<any> | null;
-const getFormConfig: GetFormConfigFunction = (formTypeId: string) => {
-    console.warn(`Placeholder: getFormConfig called for ${formTypeId}. Implement actual loading.`);
-    // In a real implementation, this would dynamically import or look up the config
-    // based on formTypeId and return it or null/throw error if not found.
-    return null; // Return null for now
-};
 
-
+// Expect formTypeId as a direct prop now
 interface GenericFormPageProps {
-  // If not using URL params, pass formTypeId directly
-  // formTypeId: string;
+  formTypeId: string;
 }
 
-const GenericFormPage: React.FC<GenericFormPageProps> = () => {
-  const { formTypeId } = useParams<{ formTypeId: string }>();
+const GenericFormPage: React.FC<GenericFormPageProps> = ({ formTypeId }) => {
+  // Removed useParams hook
   const navigate = useNavigate();
 
   const [config, setConfig] = useState<FormTypeConfig<any> | null>(null);
@@ -71,7 +62,7 @@ const GenericFormPage: React.FC<GenericFormPageProps> = () => {
       // Handle error state - navigate or show error
     }
     setIsLoadingConfig(false);
-  }, [formTypeId]);
+  }, [formTypeId]); // useEffect dependency remains formTypeId (now from props)
 
   const totalConfiguredSteps = config?.steps.length ?? 0;
   // Total steps including potential intro (0) and review (last)
@@ -90,7 +81,7 @@ const GenericFormPage: React.FC<GenericFormPageProps> = () => {
       const payload = config.mapToPayload(formData);
       setSubmissionMessage('Submitting data...');
 
-      // console.log('Submitting payload:', JSON.stringify(payload, null, 2)); // For debugging
+      console.log('Submitting payload:', JSON.stringify(payload, null, 2)); // For debugging
 
       const response = await fetch(config.submissionEndpoint, {
         method: 'POST',
@@ -121,24 +112,69 @@ const GenericFormPage: React.FC<GenericFormPageProps> = () => {
   // --- Navigation Handlers ---
   const handleNext = useCallback(() => {
     // Prevent advancing if current step is invalid (unless it's optional?)
-    // Logic might need refinement based on isOptional flag in step config
-    if (!isCurrentStepValid && currentStep > 0) return; // Allow advancing from intro (step 0)
-
-    // Check if it's the last *configured* step before review
-    if (config && currentStep === totalConfiguredSteps) {
-       if (config.reviewComponentId) {
-           setCurrentStep(currentStep + 1); // Move to review step
-       } else {
-           // If no review step, maybe trigger submit directly? Or handle error.
-           console.warn("Trying to advance past last configured step without a review step.");
-           handleSubmit(); // Or maybe show an error?
-       }
-    } else {
-       setCurrentStep((prev) => Math.min(totalUiSteps + 1, prev + 1)); // +1 to account for potential review step
+    // TODO: Add check for stepConfig.isOptional here if implementing optional steps fully
+    if (!isCurrentStepValid && currentStep > 0) {
+        console.log("Next blocked: Current step invalid");
+        return;
     }
-     // Reset validation state for the next step (assume invalid until proven otherwise)
-     setIsCurrentStepValid(false);
-  }, [config, currentStep, totalConfiguredSteps, totalUiSteps, isCurrentStepValid, handleSubmit]); // handleSubmit is now defined before this
+
+    setCurrentStep((prev) => {
+        let nextStepIndex = prev + 1; // Start by assuming we go to the next sequential step
+
+        // --- Calculate the actual next step, skipping if necessary ---
+        while (config && nextStepIndex <= totalConfiguredSteps) {
+            const potentialNextStepConfig = config.steps[nextStepIndex - 1]; // Get config for the potential next step
+            // Check if the step exists and has a shouldSkip function that returns true
+            if (potentialNextStepConfig?.shouldSkip && potentialNextStepConfig.shouldSkip(formData)) {
+                console.log(`Skipping step ${nextStepIndex}: ${potentialNextStepConfig.stepId}`);
+                nextStepIndex++; // Increment to check the *following* step
+            } else {
+                break; // Found the next non-skipped step or went past the end
+            }
+        }
+        // --- End of skip calculation ---
+
+        // --- Handle transitions after the last configured step ---
+        // If skipping led us past the last step AND there's a review step configured
+        if (config && nextStepIndex > totalConfiguredSteps && config.reviewComponentId) {
+            nextStepIndex = totalConfiguredSteps + 1; // Set index to the review step
+        }
+        // If skipping led us past the last step AND there's NO review step configured
+        else if (config && nextStepIndex > totalConfiguredSteps && !config.reviewComponentId) {
+            // No more steps, trigger submission directly
+            console.warn("Skipped past last configured step without a review step. Triggering submit.");
+            handleSubmit();
+            return prev; // Return previous state as submission handles the flow now
+        }
+        // If we landed exactly on the step *after* the last configured one, it must be the review step
+        else if (config && nextStepIndex === totalConfiguredSteps + 1 && !config.reviewComponentId) {
+             // This case should ideally not be hit if the previous check works, but as a safeguard:
+             console.warn("Reached step after last configured step without a review step. Triggering submit.");
+             handleSubmit();
+             return prev;
+        }
+
+
+        // Reset validation state for the upcoming step (assume invalid until proven otherwise)
+        // Only reset if we are actually moving to a new step (not submitting)
+        if (nextStepIndex !== prev) {
+             setIsCurrentStepValid(false); // TODO: Consider setting true for optional steps?
+        }
+
+        // Return the calculated next step index, ensuring it doesn't exceed total UI steps + 1 (for safety)
+        return Math.min(nextStepIndex, totalUiSteps + 1);
+    });
+
+  }, [
+      config,
+      currentStep, // currentStep is implicitly used via setCurrentStep's `prev`
+      totalConfiguredSteps,
+      totalUiSteps,
+      isCurrentStepValid,
+      handleSubmit,
+      formData, // Needed for shouldSkip check
+      // No need to list setCurrentStep or setIsCurrentStepValid in deps
+  ]);
 
   const handleBack = useCallback(() => {
     if (submissionStatus === 'success') return; // Don't go back from success screen
@@ -267,6 +303,34 @@ const GenericFormPage: React.FC<GenericFormPageProps> = () => {
               <CurrentStepComponent {...stepProps} />
             ) : (
               <div className="text-red-500">Error: Could not render step {currentStep}. Component not found or configuration error.</div>
+            )}
+
+            {/* Desktop Submit Button (Only on Review Step) */}
+            {isReviewStep && (
+              <button
+                onClick={handleSubmit}
+                disabled={isSubmitting}
+                className={`w-full mt-8 py-4 px-6 rounded-xl transition-all duration-200
+                           flex items-center justify-center gap-2 font-medium
+                           ${isSubmitting
+                             ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                             : 'bg-blue-500/90 hover:bg-blue-500 text-white hover:shadow-[0_0_30px_rgba(59,130,246,0.3)]'
+                           }
+                           hidden md:flex`} // Hide on mobile, show on desktop (flex)
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    <Check className="w-5 h-5" />
+                    {/* TODO: Consider making button text dynamic based on form config? */}
+                    Submit Form
+                  </>
+                )}
+              </button>
             )}
           </div>
 

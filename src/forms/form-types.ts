@@ -50,6 +50,8 @@ export interface FormStepConfig<TStepData = any, TFormData = any> {
   dataKey: keyof TFormData;
   /** Optional flag indicating if this step's input is required for progression. Defaults to true if not specified. */
   isOptional?: boolean;
+  /** Optional function to determine if this step should be skipped based on current form data. */
+  shouldSkip?: (formData: TFormData) => boolean;
 }
 
 /**

@@ -3,13 +3,24 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import * as Icons from 'lucide-react';
 import servicesData from './data/services.json';
 import ServiceCard from './components/ServiceCard';
-import ListingForm from './pages/ListingForm';
+import ListingForm from './pages/ListingForm'; // Keep for existing route
+import GenericFormPage from './pages/GenericFormPage'; // Import the new generic page
 
 function App() {
   return (
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Routes>
+        {/* Keep the original route for the existing ListingForm */}
         <Route path="/listing-form" element={<ListingForm />} />
+        {/* Add specific route for the Giveaway Form using GenericFormPage */}
+        <Route path="/giveaway-form" element={<GenericFormPage formTypeId="giveaway-campaign" />} />
+        {/* Add specific route for the Video Edit Request Form */}
+        <Route path="/video-edit-request" element={<GenericFormPage formTypeId="video-edit-request" />} />
+        {/* Add specific route for the Seller Success Story Form */}
+        <Route path="/seller-success-story" element={<GenericFormPage formTypeId="seller-success-story" />} />
+        {/* Add specific route for the Buyer Success Story Form */}
+        <Route path="/buyer-success-story" element={<GenericFormPage formTypeId="buyer-success-story" />} />
+        {/* Main page displaying services */}
         <Route path="/" element={
           <div className="relative min-h-screen overflow-hidden py-6 sm:py-12 px-3 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">

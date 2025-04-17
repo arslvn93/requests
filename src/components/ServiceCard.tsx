@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as Icons from 'lucide-react';
-import EmailModal from './EmailModal';
-import { getStoredEmail, storeEmail } from '../utils/emailStorage';
 
 interface ServiceCardProps {
   name: string;
@@ -21,43 +19,35 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   url,
   comingSoon,
 }) => {
-  const Icon = Icons[icon];
+  // Get the potential component constructor from the Icons namespace
+  const PotentialIcon = Icons[icon];
+  // We will check if it exists before rendering and use type assertion
+
   const navigate = useNavigate();
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   const handleServiceClick = (e: React.MouseEvent) => {
-    if (comingSoon) {
-      e.preventDefault();
-      return;
-    }
-    
-    // Handle listing ad form differently
-    if (name === "Listing Ad") {
-      e.preventDefault();
-      navigate('/listing-form');
-      return;
-    }
-    
-    e.preventDefault();
-    setIsModalOpen(true);
-  };
+    e.preventDefault(); // Prevent default link behavior for all clicks initially
 
-  const handleEmailSubmit = (email: string) => {
-    storeEmail(email);
-    const separator = url.includes('?') ? '&' : '?';
-    const finalUrl = `${url}${separator}email=${encodeURIComponent(email)}`;
-    window.open(finalUrl, '_blank', 'noopener,noreferrer');
-    setIsModalOpen(false);
+    if (comingSoon) {
+      return; // Do nothing for coming soon cards
+    }
+
+    // Check if the URL is an internal route (starts with '/')
+    if (url.startsWith('/')) {
+      navigate(url); // Use react-router navigation for internal routes
+    } else {
+      // For external URLs (Typeform, etc.), open directly in a new tab
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
   };
 
   return (
     <>
       <a
-        href={comingSoon ? "#" : url}
+        href={url} // Let handleServiceClick manage navigation/opening
         onClick={handleServiceClick}
-        target="_blank"
-        rel="noopener noreferrer"
+        // Removed target="_blank" - handleEmailSubmit handles new tabs for external URLs
+        rel="noopener noreferrer" // Keep rel for security when external links are opened via window.open
         className={`glass-card block group p-4 sm:p-6 touch-manipulation relative
           ${comingSoon ? 'cursor-default before:absolute before:inset-0 before:bg-black/30 before:z-10 hover:before:bg-black/20 hover:border-blue-400/50' : 'active:scale-[0.98]'} will-change-transform`}
       >
@@ -68,8 +58,14 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
         )}
       <div className="glass-gradient"></div>
       <div className="flex items-center justify-between mb-3 sm:mb-4">
-        <Icon className={`w-6 h-6 sm:w-8 sm:h-8 text-blue-400 transition-colors relative z-10
-          ${comingSoon ? 'opacity-40' : 'group-hover:text-blue-300'}`} />
+        {/* Render the icon conditionally, checking existence and using type assertion */}
+        {PotentialIcon ? (
+          React.createElement(PotentialIcon as React.ElementType, { // Use React.createElement with type assertion
+            className: `w-6 h-6 sm:w-8 sm:h-8 text-blue-400 transition-colors relative z-10 ${comingSoon ? 'opacity-40' : 'group-hover:text-blue-300'}`
+          })
+        ) : (
+          <Icons.HelpCircle className={`w-6 h-6 sm:w-8 sm:h-8 text-gray-500 transition-colors relative z-10 ${comingSoon ? 'opacity-40' : ''}`} /> // Render fallback
+        )}
       </div>
       <h3 className={`text-xl sm:text-2xl font-bold text-white mb-2 sm:mb-3 transition-colors relative z-10 leading-tight
         ${comingSoon ? 'opacity-40' : 'group-hover:text-blue-300'}`}>
@@ -88,12 +84,6 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
         </div>
       </div>
       </a>
-      <EmailModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handleEmailSubmit}
-        serviceName={name}
-      />
     </>
   );
 };
